@@ -1,0 +1,56 @@
+import React from 'react';
+import { BsBookHalf } from 'react-icons/bs';
+import { FaUser } from 'react-icons/fa';
+
+// Admin Imports
+
+// Icon Imports
+import {
+  MdHome,
+  MdOutlineShoppingCart,
+  MdBarChart,
+  MdPerson,
+  MdLock,
+} from 'react-icons/md';
+
+const routes = [
+  {
+    name: 'الرئيسية',
+    layout: '/admin',
+    path: 'default',
+    icon: <MdHome className="h-6 w-6" />,
+  },
+  {
+    name:'ادارة الموظفين',
+    layout: '/admin',
+    path: 'nft-marketplace',
+    icon: <FaUser className="h-6 w-6" />,
+
+    secondary: true,
+  },
+  {
+    name: 'الاصول ',
+    layout: '/admin',
+    icon: <MdBarChart className="h-6 w-6" />,
+    path: 'data-tables',
+  },
+  {
+    name:'ادارة التقارير ',
+    layout: '/admin',
+    path: 'profile',
+    icon: <BsBookHalf className="h-6 w-6" />,
+  },
+  // {
+  //   name: 'Sign In',
+  //   layout: '/auth',
+  //   path: 'sign-in',
+  //   icon: <MdLock className="h-6 w-6" />,
+  // },
+  {
+    name: 'الصفحة الرئيسية RTL',
+    layout: '/rtl',
+    path: 'rtl-default',
+    icon: <MdHome className="h-6 w-6" />,
+  },
+];
+export default routes;
