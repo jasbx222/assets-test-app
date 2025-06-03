@@ -34,7 +34,7 @@ const Dashboard = () => {
     updated_at: string;
   }
 };
-const { data: tableDataComplex } = useGet<RowObj[]>(`${process.env.NEXT_PUBLIC_BASE_URL}/asset-item`);
+const { data } = useGet<RowObj[]>(`${process.env.NEXT_PUBLIC_BASE_URL}/asset-item`);
 
    const searchParams = useSearchParams();
   const router = useRouter();
@@ -42,12 +42,12 @@ const { data: tableDataComplex } = useGet<RowObj[]>(`${process.env.NEXT_PUBLIC_B
   const itemsPerPage = 10; // Number of items per page
   const currentPage = parseInt(searchParams.get("page") || "1", 10);
 
-  if (!Array.isArray(tableDataComplex)) return null;
+  if (!Array.isArray(data)) return null;
 
-  const totalPages = Math.ceil(tableDataComplex.length / itemsPerPage);
+  const totalPages = Math.ceil(data.length / itemsPerPage);
   const start = (currentPage - 1) * itemsPerPage;
   const end = start + itemsPerPage;
-  const currentItems = tableDataComplex.slice(start, end);
+  const currentItems = data.slice(start, end);
 
   const goToPage = (page: number) => {
     router.push(`?page=${page}`);
