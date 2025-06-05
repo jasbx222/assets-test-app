@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import tableDataDevelopment from 'variables/data-tables/tableDataDevelopment';
 import tableDataCheck from 'variables/data-tables/tableDataCheck';
 import AssetsTable from 'components/admin/data-assets/AssetsTable';
@@ -14,6 +14,8 @@ import useGet from 'hooks/useGet';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 const Tables = () => {
+    const router = useRouter();
+  const [showAddNewAssets, setShowAddNewAssets] = useState(false);
   type RowObj = {
     id: number;
     name: string;
@@ -25,7 +27,6 @@ const Tables = () => {
     `${process.env.NEXT_PUBLIC_BASE_URL}/assets`,
   );
   const searchParams = useSearchParams();
-  const router = useRouter();
 
   const itemsPerPage = 10; // Number of items per page
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
@@ -41,7 +42,6 @@ const Tables = () => {
     router.push(`?page=${page}`);
   };
 
-  const [showAddNewAssets, setShowAddNewAssets] = React.useState(false);
   const handleAddNewAssets = () => {
     setShowAddNewAssets(!showAddNewAssets);
   };
@@ -49,20 +49,21 @@ const Tables = () => {
     <div>
       <div className="mt-5 grid h-full w-[100%]">
         {/* <DevelopmentTable tableData={DevelopmentTable} />/ */}
-       {
-        showAddNewAssets ? '': <AssetsTable
-          tableData={currentItems}
-          goToPage={goToPage}
-          handleAddNewAssets={handleAddNewAssets}
-          showAddNewAssets={showAddNewAssets}
-          currentPage={currentPage}
-          totalPages={totalPages}
-        />
-       }
+        {showAddNewAssets ? (
+          ''
+        ) : (
+          <AssetsTable
+            tableData={currentItems}
+            goToPage={goToPage}
+            handleAddNewAssets={handleAddNewAssets}
+            showAddNewAssets={showAddNewAssets}
+            currentPage={currentPage}
+            totalPages={totalPages}
+          />
+        )}
       </div>
 
       <div className="mt-5  flex h-full items-center  justify-center">
-     
         {showAddNewAssets && (
           <AddNewEssets
             isOpen={showAddNewAssets}

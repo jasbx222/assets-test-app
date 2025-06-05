@@ -7,17 +7,13 @@ import { FiDelete } from 'react-icons/fi';
 import useDelete from 'hooks/useDelete';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-
+const route = useRouter();
 const TableEmpolyee = ({ items = [] }: { items: Empolyee[] }) => {
-  if (!items || items.length === 0) {
-    return (
-      <p className="py-4 text-center text-gray-500">لا يوجد موظفين حالياً</p>
-    );
-  }
+ 
   //   {
   //     slice من العميل
   //   }
-const route = useRouter();
+
   const [slice, setSlice] = useState(10); // يمكنك تعديل هذا الرقم حسب الحاجة
   const handleSliceChange = (newSlice: number) => {
     setSlice(newSlice);
@@ -31,7 +27,11 @@ const route = useRouter();
     // بعد الحذف، يمكنك تحديث الحالة أو إعادة تحميل البيانات
  route.refresh();
     }
-
+ if (!items || items.length === 0) {
+    return (
+      <p className="py-4 text-center text-gray-500">لا يوجد موظفين حالياً</p>
+    );
+  }
   return (
     <div className="w-full overflow-x-auto">
       <table className="min-w-full table-auto rounded-md border border-gray-200 bg-white dark:bg-navy-800 text-right shadow">

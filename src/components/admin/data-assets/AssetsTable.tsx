@@ -46,7 +46,7 @@ function AssetsTable({
       <header className="relative flex items-center justify-between pt-4">
         <CardMenu />
         {/* إضافة أصول جديدة */}
-        <div className="flex items-center justify-around space-x-2">
+        <div className="flex items-center justify-around space-x-4">
           <button
             onClick={handleAddNewAssets}
             className="rounded bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
