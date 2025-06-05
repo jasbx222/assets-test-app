@@ -23,14 +23,14 @@ const Tables = () => {
     note: string | null;
     created_at: string;
   };
-  const { data: assets, loading } = useGet<RowObj>(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/assets`,
-  );
+ 
   const searchParams = useSearchParams();
 
   const itemsPerPage = 10; // Number of items per page
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
-
+ const { data: assets, loading } = useGet<RowObj>(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/assets`,
+  );
   if (!Array.isArray(assets)) return null;
 
   const totalPages = Math.ceil(assets.length / itemsPerPage);
