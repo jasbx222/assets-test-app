@@ -20,7 +20,7 @@ export default function useUpdateFaq() {
 
       const body = isFormData ? data : JSON.stringify(data);
 
-      const res = await axios.post(url, body, { headers });
+      const res = await axios.put(url, body, { headers });
       if (res.status >= 200 && res.status <= 300) {
         setResponse("تم اضافة الباقة بنجاح ");
       }

@@ -1,33 +1,87 @@
-import Card from "components/card";
-import BarChart from "components/charts/BarChart";
-import {
-  barChartDataWeeklyRevenue,
-  barChartOptionsWeeklyRevenue,
-} from "variables/charts";
-import { MdBarChart } from "react-icons/md";
+import useGet from '../../../hooks/useGet';
+import { useMemo } from 'react';
+import dayjs from 'dayjs';
+import { ApexOptions } from 'apexcharts';
+import dynamic from 'next/dynamic';
 
-const WeeklyRevenue = () => {
-  return (
-    <Card extra="flex flex-col bg-white w-full rounded-3xl py-6 px-2 text-center">
-      <div className="mb-auto flex items-center justify-between px-6">
-        <h2 className="text-lg font-bold text-navy-700 dark:text-white">
-        التقرير الاسبوعي
-        </h2>
-        <button className="!linear z-[1] flex items-center justify-center rounded-lg bg-lightPrimary p-2 text-brand-500 !transition !duration-200 hover:bg-gray-100 active:bg-gray-200 dark:bg-navy-700 dark:text-white dark:hover:bg-white/20 dark:active:bg-white/10">
-          <MdBarChart className="h-6 w-6" />
-        </button>
-      </div>
-
-      <div className="md:mt-16 lg:mt-0">
-        <div className="h-[250px] w-full xl:h-[350px]">
-          <BarChart
-            chartData={barChartDataWeeklyRevenue}
-            chartOptions={barChartOptionsWeeklyRevenue}
-          />
-        </div>
-      </div>
-    </Card>
+const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
+export default function AssetChart() {
+  const { data: assets, loading } = useGet<any[]>(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/assets`,
   );
-};
 
-export default WeeklyRevenue;
+  const chartData = useMemo(() => {
+    if (!assets) return { data: [], categories: [] };
+
+    const groupedByDay = assets.reduce(
+      (acc: Record<string, number>, asset: any) => {
+        const day = dayjs(asset.created_at).format('DD/MM');
+        acc[day] = (acc[day] || 0) + 1;
+        return acc;
+      },
+      {},
+    );
+
+    return {
+      data: [
+        {
+          name: 'عدد الأصول اليومية',
+          data: Object.values(groupedByDay),
+        },
+      ],
+      categories: Object.keys(groupedByDay),
+    };
+  }, [assets]);
+
+  const barChartOptions: ApexOptions = {
+    chart: { toolbar: { show: false } },
+    xaxis: {
+      categories: chartData.categories,
+      labels: {
+        style: {
+          colors: '#A3AED0',
+          fontSize: '14px',
+          fontWeight: '500',
+        },
+      },
+    },
+    yaxis: {
+      labels: {
+        style: {
+          colors: '#CBD5E0',
+          fontSize: '14px',
+        },
+      },
+    },
+    fill: {
+      type: 'gradient',
+      gradient: {
+        shadeIntensity: 1,
+        opacityFrom: 0.7,
+        opacityTo: 0.9,
+        colorStops: [
+          [
+            { offset: 0, color: '#4318FF', opacity: 1 },
+            { offset: 100, color: 'rgba(67, 24, 255, 1)', opacity: 0.28 },
+          ],
+        ],
+      },
+    },
+    plotOptions: {
+      bar: { borderRadius: 10, columnWidth: '40px' },
+    },
+    dataLabels: { enabled: false },
+    tooltip: { theme: 'dark' },
+  };
+
+  if (loading) return <p>تحميل البيانات...</p>;
+
+  return (
+    <Chart
+      options={barChartOptions}
+      series={chartData.data}
+      type="bar"
+      height={350}
+    />
+  );
+}

@@ -15,6 +15,8 @@ import {
 import avatar from '/public/img/avatars/avatar4.png';
 import Image from 'next/image';
 import { FaUser } from 'react-icons/fa';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 const Navbar = (props: {
   onOpenSidenav: () => void;
@@ -26,6 +28,25 @@ const Navbar = (props: {
   const [darkmode, setDarkmode] = React.useState(
     document.body.classList.contains('dark'),
   );
+
+  const navigate = useRouter();
+  const handleLogout = () => {
+    axios
+      .get(`${process.env.NEXT_PUBLIC_BASE_URL}/auth/logout`, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + localStorage.getItem('token'),
+        },
+      })
+      .then((res) => {
+        localStorage.clear();
+        navigate.push("/login");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   return (
     <nav className="sticky top-4 z-40 flex flex-row flex-wrap items-center justify-between rounded-xl bg-white/10 p-2 backdrop-blur-xl dark:bg-[#0b14374d]">
       <div className="ml-[6px]">
@@ -34,7 +55,7 @@ const Navbar = (props: {
             className="text-sm font-normal text-navy-700 hover:underline dark:text-white dark:hover:text-white"
             href=" "
           >
-       الصفحات
+            الصفحات
             <span className="mx-1 text-sm text-navy-700 hover:text-navy-700 dark:text-white">
               {' '}
               /{' '}
@@ -76,7 +97,6 @@ const Navbar = (props: {
         </span>
         {/* start Notification */}
 
-      
         <div
           className="cursor-pointer text-gray-600"
           onClick={() => {
@@ -97,10 +117,7 @@ const Navbar = (props: {
         </div>
         {/* Profile & Dropdown */}
         <Dropdown
-       button={
-          <FaUser/>
-          
-       }
+          button={<FaUser />}
           classNames={'py-2 top-8 -left-[180px] w-max'}
         >
           <div className="flex h-48 w-56 flex-col justify-start rounded-[20px] bg-white bg-cover bg-no-repeat shadow-xl shadow-shadow-500 dark:!bg-navy-700 dark:text-white dark:shadow-none">
@@ -115,24 +132,21 @@ const Navbar = (props: {
 
             <div className="ml-4 mt-3 flex flex-col">
               <a
-                href=" "
+                href=""
                 className="text-sm text-gray-800 dark:text-white hover:dark:text-white"
               >
-              
-              اعدادات الحساب
+                اعدادات الحساب
               </a>
               <a
                 href=" "
                 className="mt-3 text-sm text-gray-800 dark:text-white hover:dark:text-white"
-              >
-              
-              </a>
-              <a
-                href=" "
+              ></a>
+              <button
+                onClick={handleLogout}
                 className="mt-3 text-sm font-medium text-red-500 hover:text-red-500"
               >
-             تسجيل الخروج 
-              </a>
+                تسجيل الخروج
+              </button>
             </div>
           </div>
         </Dropdown>

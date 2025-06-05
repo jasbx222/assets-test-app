@@ -23,7 +23,7 @@ const routes = [
   {
     name:'ادارة الموظفين',
     layout: '/admin',
-    path: 'nft-marketplace',
+    path: 'empolyee',
     icon: <FaUser className="h-6 w-6" />,
 
     secondary: true,
@@ -32,12 +32,12 @@ const routes = [
     name: 'الاصول ',
     layout: '/admin',
     icon: <MdBarChart className="h-6 w-6" />,
-    path: 'data-tables',
+    path: 'data-assets',
   },
   {
     name:'ادارة التقارير ',
     layout: '/admin',
-    path: 'profile',
+    path: 'reports',
     icon: <BsBookHalf className="h-6 w-6" />,
   },
   // {
@@ -46,11 +46,11 @@ const routes = [
   //   path: 'sign-in',
   //   icon: <MdLock className="h-6 w-6" />,
   // },
-  {
-    name: 'الصفحة الرئيسية RTL',
-    layout: '/rtl',
-    path: 'rtl-default',
-    icon: <MdHome className="h-6 w-6" />,
-  },
+  // {
+  //   name: 'الصفحة الرئيسية RTL',
+  //   layout: '/rtl',
+  //   path: 'rtl-default',
+  //   icon: <MdHome className="h-6 w-6" />,
+  // },
 ];
 export default routes;

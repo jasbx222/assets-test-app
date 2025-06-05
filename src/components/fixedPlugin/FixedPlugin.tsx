@@ -11,7 +11,7 @@ export default function FixedPlugin(props: { [x: string]: any }) {
 
   return (
     <button
-      className="border-px fixed bottom-[30px] right-[35px] !z-[99] flex h-[60px] w-[60px] items-center justify-center rounded-full border-[#6a53ff] bg-gradient-to-br from-brand-400 to-brand-600 p-0"
+      className="border-px fixed bottom-[30px] left-0 !z-[99] flex h-[60px] w-[60px] items-center justify-center rounded-full border-[#6a53ff] bg-gradient-to-br from-brand-400 to-brand-600 p-0"
       onClick={() => {
         if (darkmode) {
           document.body.classList.remove('dark');

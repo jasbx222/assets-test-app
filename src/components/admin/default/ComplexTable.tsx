@@ -60,7 +60,7 @@ export default function SimpleTable({ tableData, totalPages, goToPage, currentPa
                     {row.status === "new" && (
                       <MdCheckCircle className="text-green-500 dark:text-green-300" />
                     )}
-                    {row.status === "تالف" && (
+                    {row.status === "damaged" && (
                       <MdCancel className="text-red-500 dark:text-red-300" />
                     )}
                     {row.status === "مستعمل" && (

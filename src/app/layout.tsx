@@ -6,12 +6,10 @@ import AuthLayout from './AuthLayout';
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="ar" dir="rtl">
       <body id="root">
         <AppWrappers>
-          <AuthLayout>
-            {children}
-          </AuthLayout>
+          <AuthLayout>{children}</AuthLayout>
         </AppWrappers>
       </body>
     </html>

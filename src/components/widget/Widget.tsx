@@ -3,7 +3,7 @@ import Card from "components/card";
 const Widget = (props: {
   icon: JSX.Element;
   title: string;
-  subtitle: string;
+  subtitle: string 
 }) => {
   const { icon, title, subtitle } = props;
   return (

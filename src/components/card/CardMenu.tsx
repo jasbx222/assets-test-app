@@ -6,6 +6,7 @@ import { FiSettings } from 'react-icons/fi';
 import { AiOutlineShop } from 'react-icons/ai';
 import { TiLightbulb } from 'react-icons/ti';
 import { BsThreeDotsVertical } from 'react-icons/bs';
+import { MdNote } from 'react-icons/md';
 
 function CardMenu(props: { transparent?: boolean; vertical?: boolean }) {
   const { transparent, vertical } = props;
@@ -32,33 +33,33 @@ function CardMenu(props: { transparent?: boolean; vertical?: boolean }) {
           )}
         </button>
       }
-      animation={'origin-top-right transition-all duration-300 ease-in-out'}
-      classNames={`${transparent ? 'top-8' : 'top-11'} right-0 w-max`}
+      animation={'origin-top-left transition-all duration-300 ease-in-out'}
+      classNames={`${transparent ? 'top-8' : 'top-11'} left-0 w-max`}
     >
       <div className="z-50 w-max rounded-xl bg-white px-4 py-3 text-sm shadow-xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
         <p className="hover:text-black flex cursor-pointer items-center gap-2 text-gray-600 hover:font-medium">
           <span>
             <AiOutlineUser />
           </span>
-          Panel 1
+        قسم المالية
         </p>
         <p className="hover:text-black mt-2 flex cursor-pointer items-center gap-2 pt-1 text-gray-600 hover:font-medium">
           <span>
             <AiOutlineShop />
           </span>
-          Panel 2
+          قسم المبيعات
         </p>
         <p className="hover:text-black mt-2 flex cursor-pointer items-center gap-2 pt-1 text-gray-600 hover:font-medium">
           <span>
             <TiLightbulb />
           </span>
-          Panel 3
+    قسم التسويق
         </p>
         <p className="hover:text-black mt-2 flex cursor-pointer items-center gap-2 pt-1 text-gray-600 hover:font-medium">
           <span>
-            <FiSettings />
+            <MdNote />
           </span>
-          Panel 4
+   قسم الشؤون الإدارية
         </p>
       </div>
     </Dropdown>

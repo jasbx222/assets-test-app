@@ -62,7 +62,7 @@ function SignInDefault() {
       const token = res.data?.token;
       if (token) {
         localStorage.setItem('token', token);
-        route.push('/home');
+        route.push('/admin/');
       } else {
         setErr('فشل تسجيل الدخول: لا يوجد توكين.');
       }
@@ -149,18 +149,7 @@ function SignInDefault() {
               </button>
             </form>
 
-            {/* رابط إنشاء حساب جديد */}
-            <div className="mt-4 text-center">
-              <span className="text-sm font-medium text-navy-700 dark:text-gray-500">
-                ليس لديك حساب؟
-              </span>
-              <a
-                href="/auth/sign-up/default"
-                className="ml-1 text-sm font-medium text-brand-500 hover:text-brand-600 dark:text-white"
-              >
-                إنشاء حساب
-              </a>
-            </div>
+       
           </div>
         </div>
       }

@@ -1,53 +1,71 @@
 'use client';
-import MiniCalendar from 'components/calendar/MiniCalendar';
-import WeeklyRevenue from 'components/admin/default/WeeklyRevenue';
+// import MiniCalendar from 'components/calendar/MiniCalendar';
+import Chart from 'components/admin/default/WeeklyRevenue';
 import TotalSpent from 'components/admin/default/TotalSpent';
-import PieChartCard from 'components/admin/default/PieChartCard';
+// import PieChartCard from 'components/admin/default/PieChartCard';
 import { IoMdHome } from 'react-icons/io';
-import { IoDocuments } from 'react-icons/io5';
-import { MdBarChart, MdDashboard } from 'react-icons/md';
+// import { IoDocuments, IoHomeOutline } from 'react-icons/io5';
+import { MdBarChart } from 'react-icons/md';
 
 import Widget from 'components/widget/Widget';
-import CheckTable from 'components/admin/default/CheckTable';
+// import CheckTable from 'components/admin/default/CheckTable';
 import ComplexTable from 'components/admin/default/ComplexTable';
-import DailyTraffic from 'components/admin/default/DailyTraffic';
-import TaskCard from 'components/admin/default/TaskCard';
-import tableDataCheck from 'variables/data-tables/tableDataCheck';
-import tableDataComplex from 'variables/data-tables/tableDataComplex';
+// import DailyTraffic from 'components/admin/default/DailyTraffic';
+// import TaskCard from 'components/admin/default/TaskCard';
+// import tableDataCheck from 'variables/data-tables/tableDataCheck';
+// import tableDataComplex from 'variables/data-tables/tableDataComplex';
 import useGet from 'hooks/useGet';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { FaBell, FaUser } from 'react-icons/fa';
 
 const Dashboard = () => {
-    type RowObj = {
-  name: string;
-  status: string;
-  created_at: string;
-  label: string;
-  asset: {
-    id: string;
+  type RowObj = {
     name: string;
-    description: string;
-    category: string;
-    location: string;
     status: string;
     created_at: string;
-    updated_at: string;
-  }
-};
-const { data } = useGet<RowObj[]>(`${process.env.NEXT_PUBLIC_BASE_URL}/asset-item`);
+    label: string;
+    asset: {
+      id: string;
+      name: string;
+      description: string;
+      category: string;
+      location: string;
+      status: string;
+      created_at: string;
+      updated_at: string;
+    };
+  };
+  const { data: tableDataComplex } = useGet<RowObj[]>(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/asset-item`,
+  );
+  const { data: empolyee } = useGet<RowObj[]>(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/clients`,
+  );
+  const { data: notifaction } = useGet<RowObj[]>(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/notification`,
+  );
+  const { data: departments } = useGet<RowObj[]>(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/departments`,
+  );
+  const { data: entities } = useGet<RowObj[]>(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/entities`,
+  );
+  const { data: assets } = useGet<any>(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/assets`,
+  );
 
-   const searchParams = useSearchParams();
+  const searchParams = useSearchParams();
   const router = useRouter();
 
   const itemsPerPage = 10; // Number of items per page
-  const currentPage = parseInt(searchParams.get("page") || "1", 10);
+  const currentPage = parseInt(searchParams.get('page') || '1', 10);
 
-  if (!Array.isArray(data)) return null;
+  if (!Array.isArray(tableDataComplex)) return null;
 
-  const totalPages = Math.ceil(data.length / itemsPerPage);
+  const totalPages = Math.ceil(tableDataComplex.length / itemsPerPage);
   const start = (currentPage - 1) * itemsPerPage;
   const end = start + itemsPerPage;
-  const currentItems = data.slice(start, end);
+  const currentItems = tableDataComplex.slice(start, end);
 
   const goToPage = (page: number) => {
     router.push(`?page=${page}`);
@@ -64,29 +82,32 @@ const { data } = useGet<RowObj[]>(`${process.env.NEXT_PUBLIC_BASE_URL}/asset-ite
           subtitle={tableDataComplex.length.toString()}
         />
         <Widget
-          icon={<IoDocuments className="h-6 w-6" />}
+          icon={<MdBarChart className="h-6 w-6" />}
           title={'  اخر الجرد'}
-          subtitle={'642.39'}
+          subtitle={assets[assets.length - 1]?.created_at.slice(
+            12, 20
+          
+          ) || 'لا يوجد بيانات'}
         />
         <Widget
-          icon={<MdBarChart className="h-7 w-7" />}
-          title={'الاصول التالفه'}
-          subtitle={'574.34'}
+          icon={<FaBell className="h-7 w-7" />}
+          title={'الاشعارات'}
+          subtitle={notifaction.length.toString()}
         />
         <Widget
-          icon={<MdDashboard className="h-6 w-6" />}
+          icon={<FaUser className="h-6 w-6" />}
           title={'الموظفين '}
-          subtitle={'1000'}
+          subtitle={empolyee.length.toString()}
         />
         <Widget
-          icon={<MdBarChart className="h-7 w-7" />}
+          icon={<IoMdHome className="h-7 w-7" />}
           title={'الاقسام '}
-          subtitle={'45'}
+          subtitle={departments.length.toString()}
         />
         <Widget
           icon={<IoMdHome className="h-6 w-6" />}
           title={'الشعب '}
-          subtitle={'33'}
+          subtitle={entities.length.toString()}
         />
       </div>
 
@@ -94,15 +115,20 @@ const { data } = useGet<RowObj[]>(`${process.env.NEXT_PUBLIC_BASE_URL}/asset-ite
 
       <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
         <TotalSpent />
-        <WeeklyRevenue />
+        <Chart />
       </div>
 
       {/* Tables & Charts */}
 
-      <div className=" w-full container ">
+      <div className=" container w-full ">
         {/* Complex Table , Task & Calendar */}
 
-        <ComplexTable tableData={currentItems}  goToPage={goToPage}totalPages={totalPages} currentPage={currentPage}/>
+        <ComplexTable
+          tableData={currentItems}
+          goToPage={goToPage}
+          totalPages={totalPages}
+          currentPage={currentPage}
+        />
       </div>
     </div>
   );

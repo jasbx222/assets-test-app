@@ -1,6 +1,6 @@
-"use client";
-import axios from "axios";
-import { useEffect, useState } from "react";
+'use client';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 const useGet = <T>(url: string) => {
   const [data, setData] = useState<T[]>([]);
@@ -8,14 +8,14 @@ const useGet = <T>(url: string) => {
 
   useEffect(() => {
     setLoading(false);
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem('token');
     if (!token) return;
     const fetchData = async () => {
       try {
         const res = await axios.get(url, {
           headers: {
             Authorization: `Bearer ${token}`,
-            Accept: "application/json; charset=UTF-8",
+            Accept: 'application/json; charset=UTF-8',
           },
         });
         if (res.status >= 200) {
@@ -26,6 +26,11 @@ const useGet = <T>(url: string) => {
       }
     };
     fetchData();
+    // // make it refresh every 5 seconds/
+    // const interval = setInterval(() => {
+    //   fetchData();
+    // }, 5000);
+    // return () => clearInterval(interval);
   }, []);
   return { data, loading };
 };

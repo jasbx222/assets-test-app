@@ -15,7 +15,7 @@ import routes from 'routes';
 import Card from 'components/card';
 import Image from 'next/image';
 
-function SidebarHorizon(props: { variant?: string; [x: string]: any }) {
+function Sidebar(props: { variant?: string; [x: string]: any }) {
   const { open, onClose, variant, mini, hovered, setHovered } = props;
   return (
     <div
@@ -25,7 +25,7 @@ function SidebarHorizon(props: { variant?: string; [x: string]: any }) {
           : mini === true && hovered === true
           ? 'w-[285px]'
           : 'w-[285px] xl:!w-[120px]'
-      } duration-175 linear fixed !z-50 min-h-full transition-all md:!z-50 lg:!z-50 xl:!z-0 ${
+      } duration-175 linear fixed z-50 md:right-0 min-h-full transition-all md:!z-50 lg:!z-50 xl:!z-0 ${
         variant === 'auth' ? 'xl:hidden' : 'xl:block'
       } ${open ? '' : '-translate-x-[105%] xl:translate-x-[unset]'}`}
       onMouseEnter={() => setHovered(true)}
@@ -120,4 +120,4 @@ function SidebarHorizon(props: { variant?: string; [x: string]: any }) {
   );
 }
 
-export default SidebarHorizon;
+export default Sidebar;
