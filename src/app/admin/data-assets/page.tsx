@@ -1,57 +1,74 @@
 'use client';
 import React, { useState } from 'react';
-import tableDataDevelopment from 'variables/data-tables/tableDataDevelopment';
-import tableDataCheck from 'variables/data-tables/tableDataCheck';
 import AssetsTable from 'components/admin/data-assets/AssetsTable';
-import tableDataColumns from 'variables/data-tables/tableDataColumns';
-// import tableDataComplex from 'variables/data-tables/tableDataComplex';
-import DevelopmentTable from 'components/admin/data-assets/DevelopmentTable';
-import ColumnsTable from 'components/admin/data-assets/ColumnsTable';
-import ComplexTable from 'components/admin/data-assets/ComplexTable';
-// import AddNewEmpolyee from '../nft-marketplace/AddNewEmpolyee';
 import AddNewEssets from './add/AddNewEssets';
 import useGet from 'hooks/useGet';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 const Tables = () => {
-    const router = useRouter();
+  const router = useRouter();
   const [showAddNewAssets, setShowAddNewAssets] = useState(false);
-  type RowObj = {
+
+  interface RowObj {
     id: number;
     name: string;
     image: string;
     note: string | null;
     created_at: string;
+    department?: string;
+    room?: string;
+    group?: string;
   };
- 
+
   const searchParams = useSearchParams();
 
-  const itemsPerPage = 10; // Number of items per page
+  // جلب قيم الفلاتر من الرابط
+  const departmentFilter = searchParams.get('departments') || '';
+  const roomFilter = searchParams.get('room') || '';
+  const groupFilter = searchParams.get('group') || '';
+
+  const itemsPerPage = 10; // عدد العناصر لكل صفحة
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
- const { data: assets, loading } = useGet<RowObj>(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/assets`,
-  );
+
+  // بناء رابط API مع الفلاتر كـ query parameters
+  const queryString = new URLSearchParams();
+  if (departmentFilter) queryString.append('department', departmentFilter);
+  if (roomFilter) queryString.append('room', roomFilter);
+  if (groupFilter) queryString.append('group', groupFilter);
+
+  // إضافة الباجينيشن لو API يدعمه (مثلاً page و limit)
+  queryString.append('page', currentPage.toString());
+  queryString.append('limit', itemsPerPage.toString());
+
+  const url = `${process.env.NEXT_PUBLIC_BASE_URL}/assets?${queryString.toString()}`;
+
+  // جلب البيانات مع الفلاتر والباجينيشن
+  const { data: assets, loading } = useGet<any>(url);
+
   if (!Array.isArray(assets)) return null;
 
-  const totalPages = Math.ceil(assets.length / itemsPerPage);
-  const start = (currentPage - 1) * itemsPerPage;
-  const end = start + itemsPerPage;
-  const currentItems = assets.slice(start, end);
+ 
+  const totalPages = 1;
+  const currentItems = assets;
 
-  const goToPage = (page: any) => {
-    router.push(`?page=${page}`);
+  // تغيير الصفحة وتحديث الرابط مع الفلاتر
+  const goToPage = (page: number) => {
+    const params = new URLSearchParams();
+    if (departmentFilter) params.append('department', departmentFilter);
+    if (roomFilter) params.append('room', roomFilter);
+    if (groupFilter) params.append('group', groupFilter);
+    params.append('page', page.toString());
+    router.push(`?${params.toString()}`);
   };
 
   const handleAddNewAssets = () => {
     setShowAddNewAssets(!showAddNewAssets);
   };
+
   return (
     <div>
       <div className="mt-5 grid h-full w-[100%]">
-        {/* <DevelopmentTable tableData={DevelopmentTable} />/ */}
-        {showAddNewAssets ? (
-          ''
-        ) : (
+        {!showAddNewAssets && (
           <AssetsTable
             tableData={currentItems}
             goToPage={goToPage}
@@ -63,17 +80,13 @@ const Tables = () => {
         )}
       </div>
 
-      <div className="mt-5  flex h-full items-center  justify-center">
+      <div className="mt-5 flex h-full items-center justify-center">
         {showAddNewAssets && (
           <AddNewEssets
             isOpen={showAddNewAssets}
             onClose={handleAddNewAssets}
           />
         )}
-        {/* <ColumnsTable tableData={tableDataColumns} />
-
-
-        <ComplexTable tableData={tableDataComplex} /> */}
       </div>
     </div>
   );

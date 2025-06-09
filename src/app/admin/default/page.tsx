@@ -1,71 +1,64 @@
 'use client';
-// import MiniCalendar from 'components/calendar/MiniCalendar';
+
+import { useState } from 'react';
 import Chart from 'components/admin/default/WeeklyRevenue';
 import TotalSpent from 'components/admin/default/TotalSpent';
-// import PieChartCard from 'components/admin/default/PieChartCard';
 import { IoMdHome } from 'react-icons/io';
-// import { IoDocuments, IoHomeOutline } from 'react-icons/io5';
 import { MdBarChart } from 'react-icons/md';
-
 import Widget from 'components/widget/Widget';
-// import CheckTable from 'components/admin/default/CheckTable';
 import ComplexTable from 'components/admin/default/ComplexTable';
-// import DailyTraffic from 'components/admin/default/DailyTraffic';
-// import TaskCard from 'components/admin/default/TaskCard';
-// import tableDataCheck from 'variables/data-tables/tableDataCheck';
-// import tableDataComplex from 'variables/data-tables/tableDataComplex';
 import useGet from 'hooks/useGet';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FaBell, FaUser } from 'react-icons/fa';
 
 const Dashboard = () => {
-  type RowObj = {
-    name: string;
-    status: string;
-    created_at: string;
-    label: string;
-    asset: {
-      id: string;
-      name: string;
-      description: string;
-      category: string;
-      location: string;
-      status: string;
-      created_at: string;
-      updated_at: string;
-    };
-  };
-  const { data: tableDataComplex } = useGet<RowObj[]>(
+  const { data: tableDataComplex = [] } = useGet<any>(
     `${process.env.NEXT_PUBLIC_BASE_URL}/asset-item`,
   );
-  const { data: empolyee } = useGet<RowObj[]>(
+  const { data: empolyee = [] } = useGet<any>(
     `${process.env.NEXT_PUBLIC_BASE_URL}/clients`,
   );
-  const { data: notifaction } = useGet<RowObj[]>(
+  const { data: notifaction = [] } = useGet<any>(
     `${process.env.NEXT_PUBLIC_BASE_URL}/notification`,
   );
-  const { data: departments } = useGet<RowObj[]>(
+  const { data: departments = [] } = useGet<any>(
     `${process.env.NEXT_PUBLIC_BASE_URL}/departments`,
   );
-  const { data: entities } = useGet<RowObj[]>(
+  const { data: entities = [] } = useGet<any>(
     `${process.env.NEXT_PUBLIC_BASE_URL}/entities`,
   );
-  const { data: assets } = useGet<any>(
+  const { data: assets = [] } = useGet<any>(
     `${process.env.NEXT_PUBLIC_BASE_URL}/assets`,
   );
 
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const itemsPerPage = 10; // Number of items per page
+  const itemsPerPage = 10;
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
 
-  if (!Array.isArray(tableDataComplex)) return null;
+  // حالات الفلاتر
+  const [selectedRoom, setSelectedRoom] = useState('');
+  const [selectedDivision, setSelectedDivision] = useState('');
+  const [selectedDepartment, setSelectedDepartment] = useState('');
 
-  const totalPages = Math.ceil(tableDataComplex.length / itemsPerPage);
+  // استخراج القيم الفريدة
+  const rooms = Array.from(new Set(tableDataComplex.map((item) => item.room?.name).filter(Boolean)));
+  const divisions = Array.from(new Set(tableDataComplex.map((item) => item.room?.division?.name).filter(Boolean)));
+  const departmentsList = Array.from(new Set(tableDataComplex.map((item) => item.room?.division?.department?.name).filter(Boolean)));
+
+  // فلترة البيانات
+  const filteredData = tableDataComplex.filter((item) => {
+    const matchRoom = selectedRoom ? item.room?.name === selectedRoom : true;
+    const matchDivision = selectedDivision ? item.room?.division?.name === selectedDivision : true;
+    const matchDepartment = selectedDepartment ? item.room?.division?.department?.name === selectedDepartment : true;
+    return matchRoom && matchDivision && matchDepartment;
+  });
+
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
   const start = (currentPage - 1) * itemsPerPage;
   const end = start + itemsPerPage;
-  const currentItems = tableDataComplex.slice(start, end);
+  const currentItems = filteredData.slice(start, end);
 
   const goToPage = (page: number) => {
     router.push(`?page=${page}`);
@@ -73,56 +66,90 @@ const Dashboard = () => {
 
   return (
     <div>
-      {/* Card widget */}
-
-      <div className="mt-3 grid  grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 3xl:grid-cols-6">
+      {/* Widgets */}
+      <div className="mt-3 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 3xl:grid-cols-6">
         <Widget
           icon={<MdBarChart className="h-7 w-7" />}
-          title={'اجمالي الاصول'}
+          title="اجمالي الاصول"
           subtitle={tableDataComplex.length.toString()}
         />
         <Widget
           icon={<MdBarChart className="h-6 w-6" />}
-          title={'  اخر الجرد'}
-          subtitle={assets[assets.length - 1]?.created_at.slice(
-            12, 20
-          
-          ) || 'لا يوجد بيانات'}
+          title="اخر الجرد"
+          subtitle={assets[assets.length - 1]?.created_at.slice(12, 20) || 'لا يوجد بيانات'}
         />
         <Widget
           icon={<FaBell className="h-7 w-7" />}
-          title={'الاشعارات'}
+          title="الاشعارات"
           subtitle={notifaction.length.toString()}
         />
         <Widget
           icon={<FaUser className="h-6 w-6" />}
-          title={'الموظفين '}
+          title="الموظفين"
           subtitle={empolyee.length.toString()}
         />
         <Widget
           icon={<IoMdHome className="h-7 w-7" />}
-          title={'الاقسام '}
+          title="الاقسام"
           subtitle={departments.length.toString()}
         />
         <Widget
           icon={<IoMdHome className="h-6 w-6" />}
-          title={'الشعب '}
+          title="الشعب"
           subtitle={entities.length.toString()}
         />
       </div>
 
       {/* Charts */}
-
       <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
         <TotalSpent />
         <Chart />
       </div>
 
-      {/* Tables & Charts */}
+      {/* الفلاتر */}
+      <div className="flex flex-wrap gap-4 mt-6 mb-4">
+        <select
+          value={selectedRoom}
+          onChange={(e) => setSelectedRoom(e.target.value)}
+          className="border p-2 rounded-md"
+        >
+          <option value="">كل الغرف</option>
+          {rooms.map((room) => (
+            <option key={room} value={room}>
+              {room}
+            </option>
+          ))}
+        </select>
 
-      <div className=" container w-full ">
-        {/* Complex Table , Task & Calendar */}
+        <select
+          value={selectedDivision}
+          onChange={(e) => setSelectedDivision(e.target.value)}
+          className="border p-2 rounded-md"
+        >
+          <option value="">كل الشعب</option>
+          {divisions.map((division) => (
+            <option key={division} value={division}>
+              {division}
+            </option>
+          ))}
+        </select>
 
+        <select
+          value={selectedDepartment}
+          onChange={(e) => setSelectedDepartment(e.target.value)}
+          className="border p-2 rounded-md"
+        >
+          <option value="">كل الأقسام</option>
+          {departmentsList.map((dept) => (
+            <option key={dept} value={dept}>
+              {dept}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* جدول الأصول */}
+      <div className="container w-full">
         <ComplexTable
           tableData={currentItems}
           goToPage={goToPage}

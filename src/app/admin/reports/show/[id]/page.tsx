@@ -41,23 +41,26 @@ export default function ReportDetail() {
     setCurrentPage(1);
   }, [report, selectedDivision, selectedDepartment]);
 
-  // احسب عدد الصفحات مباشرة
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
 
-  // احصل على العناصر التي يجب عرضها في الصفحة الحالية
   const currentItems = filteredItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-  // استخراج القيم الفريدة للشعب والأقسام
   const uniqueDivisions: string[] =
     Array.from(new Set(report?.result?.items_details?.map((item: ItemDetail) => item.division?.name).filter(Boolean))) || [];
 
   const uniqueDepartments: string[] =
     Array.from(new Set(report?.result?.items_details?.map((item: ItemDetail) => item.department?.name).filter(Boolean))) || [];
 
-  // وظيفة تغيير الصفحة
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-  // تصدير Excel
+  const handlePrev = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+  const handleNext = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
   const handleExport = () => {
     if (filteredItems.length === 0) {
       alert('لا توجد عناصر لتصديرها');
@@ -185,19 +188,26 @@ export default function ReportDetail() {
           </table>
         </div>
 
-        {/* أزرار الباجينيشن */}
+        {/* أزرار التالي والسابق */}
         <div className="flex justify-center mt-4 space-x-2">
-          {Array.from({ length: totalPages }, (_, i) => (
-            <button
-              key={i}
-              onClick={() => paginate(i + 1)}
-              className={`w-8 h-8 rounded-full text-sm font-semibold ${
-                currentPage === i + 1 ? 'bg-blue-600 text-white' : 'bg-white border border-gray-300 text-gray-700'
-              }`}
-            >
-              {i + 1}
-            </button>
-          ))}
+          <button
+            onClick={handlePrev}
+            disabled={currentPage === 1}
+            className={`px-4 py-2 rounded-lg font-semibold ${
+              currentPage === 1 ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'
+            }`}
+          >
+            السابق
+          </button>
+          <button
+            onClick={handleNext}
+            disabled={currentPage === totalPages || totalPages === 0}
+            className={`px-4 py-2 rounded-lg font-semibold ${
+              currentPage === totalPages || totalPages === 0 ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'
+            }`}
+          >
+            التالي
+          </button>
         </div>
       </section>
     </div>
