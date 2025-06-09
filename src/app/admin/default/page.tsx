@@ -106,48 +106,6 @@ const Dashboard = () => {
         <Chart />
       </div>
 
-      {/* الفلاتر */}
-      <div className="flex flex-wrap gap-4 mt-6 mb-4">
-        <select
-          value={selectedRoom}
-          onChange={(e) => setSelectedRoom(e.target.value)}
-          className="border p-2 rounded-md"
-        >
-          <option value="">كل الغرف</option>
-          {rooms.map((room) => (
-            <option key={room} value={room}>
-              {room}
-            </option>
-          ))}
-        </select>
-
-        <select
-          value={selectedDivision}
-          onChange={(e) => setSelectedDivision(e.target.value)}
-          className="border p-2 rounded-md"
-        >
-          <option value="">كل الشعب</option>
-          {divisions.map((division) => (
-            <option key={division} value={division}>
-              {division}
-            </option>
-          ))}
-        </select>
-
-        <select
-          value={selectedDepartment}
-          onChange={(e) => setSelectedDepartment(e.target.value)}
-          className="border p-2 rounded-md"
-        >
-          <option value="">كل الأقسام</option>
-          {departmentsList.map((dept) => (
-            <option key={dept} value={dept}>
-              {dept}
-            </option>
-          ))}
-        </select>
-      </div>
-
       {/* جدول الأصول */}
       <div className="container w-full">
         <ComplexTable

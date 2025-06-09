@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import Dropdown from 'components/dropdown';
 import { FiAlignJustify } from 'react-icons/fi';
 import NavLink from 'components/link/NavLink';
@@ -30,7 +30,6 @@ const Navbar = (props: {
 
   type NotificationItem = {
     id: string;
-    // report_id:string;
     notification: {
       title: string;
       body: string;
@@ -78,34 +77,36 @@ const Navbar = (props: {
 
   return (
     <>
-      {/* إشعار يطفو   */}
+      {/* إشعار يطفو */}
       <AnimatePresence>
-         {popupVisible && data && data[0] && (
-         <Link href={`/admin/reports/show/${data[0].notification.report_id}`}>
-            
-          <motion.div
-            initial={{ opacity: 0, y: -50, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -50, scale: 0.9 }}
-            transition={{ duration: 0.4 }}
-            className="fixed right-5 top-5 z-[9999] w-[300px] rounded-xl bg-white p-4 shadow-lg dark:bg-navy-800 dark:text-white"
-          >
-            <div className="flex flex-col gap-1">
-              <p className="text-base font-semibold text-navy-700 dark:text-white">
-                {data[0].notification.title}
-              </p>
-              <span className="text-sm text-gray-800 dark:text-gray-300">
-                {data[0].notification.body}
-              </span>
-            </div>
-          </motion.div>
-             </Link>
+        {popupVisible && data && data[0] && (
+          <Link href={`/admin/reports/show/${data[0].notification.report_id}`}>
+            <motion.div
+              initial={{ opacity: 0, y: -50, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -50, scale: 0.9 }}
+              transition={{ duration: 0.4 }}
+              className="fixed top-5 z-[9999] right-5 w-[300px] rounded-xl bg-white p-4 shadow-lg dark:bg-navy-800 dark:text-white"
+              dir="rtl"
+            >
+              <div className="flex flex-col gap-1">
+                <p className="text-base font-semibold text-navy-700 dark:text-white">
+                  {data[0].notification.title}
+                </p>
+                <span className="text-sm text-gray-800 dark:text-gray-300">
+                  {data[0].notification.body}
+                </span>
+              </div>
+            </motion.div>
+          </Link>
         )}
-      
       </AnimatePresence>
 
-      <nav className="sticky top-4 z-40 flex flex-row flex-wrap items-center justify-between rounded-xl bg-white/10 p-2 backdrop-blur-xl dark:bg-[#0b14374d]">
-        <div className="ml-[6px]">
+      <nav
+        dir="rtl"
+        className="sticky top-4 z-40 flex flex-row flex-wrap items-center justify-between rounded-xl bg-white/10 p-2 backdrop-blur-xl dark:bg-[#0b14374d]"
+      >
+        <div className="mr-[6px]">
           <div className="h-6 w-[224px] pt-1">
             <a
               className="text-sm font-normal text-navy-700 hover:underline dark:text-white dark:hover:text-white"
@@ -136,40 +137,36 @@ const Navbar = (props: {
         <div className="relative mt-[3px] flex h-[61px] w-full flex-grow items-center justify-around gap-2 rounded-full bg-white px-2 py-2 shadow-xl dark:!bg-navy-800 md:w-[365px] md:flex-grow-0 xl:w-[365px]">
           {/* الجرس */}
           <div className="flex items-center gap-2 text-red-600 dark:text-red-400">
-          
             <Dropdown
               button={
                 <div className="flex w-full items-center justify-between gap-2 rounded-full px-4 py-2 transition-colors hover:bg-gray-100 dark:hover:bg-navy-800">
                   <div className="flex items-center gap-2">
                     <Bell className="h-5 w-5 text-red-600 dark:text-red-400" />
                     <span className="text-sm font-semibold text-red-600 dark:text-red-400">
-                      {data.length} إشعارات
+                      {data?.length ?? 0} إشعارات
                     </span>
                   </div>
                 </div>
               }
-              classNames="py-2 top-10 left-0 w-[300px] z-50"
+              classNames="py-2 top-10 right-0 w-[300px] z-50"
             >
-              <div className="flex w-full flex-col gap-3 rounded-xl bg-white p-4 shadow-md dark:bg-navy-700">
+              <div className="flex w-full flex-col gap-3 rounded-xl bg-white p-4 shadow-md dark:bg-navy-700" dir="rtl">
                 {data?.slice(slice - 6, slice).map((notification) => (
                   <div
                     key={notification.id}
                     className="flex flex-col gap-1 rounded-lg border border-gray-200 bg-gray-50 p-3 transition hover:bg-gray-100 dark:border-navy-600 dark:bg-navy-600 dark:hover:bg-navy-500"
                   >
                     <Link href={`/admin/reports/show/${notification.notification.report_id}`}>
-                    <p className="text-sm font-medium text-gray-800 dark:text-white">
-                      {notification?.notification.title}
-                    </p>
+                      <p className="text-sm font-medium text-gray-800 dark:text-white">
+                        {notification?.notification.title}
+                      </p>
                     </Link>
                     <span className="text-xs text-gray-800 dark:text-gray-300">
                       {new Date(notification.created_at).toLocaleString()}
                     </span>
                   </div>
                 ))}
-                {/* // عرض اول عشر اشعارات فقط 
-          // with sice function  */}
-                {/* ايضا اضافه زر السابق والتالي  */}
-                <div className="flex items-center justify-center space-x-2">
+                <div className="flex items-center justify-center space-x-2 space-x-reverse">
                   <button
                     onClick={() => handleSliceChange(slice - 6)}
                     disabled={slice <= 6}
@@ -178,11 +175,11 @@ const Navbar = (props: {
                     السابق
                   </button>
                   <span className="text-sm text-gray-600">
-                    عرض {slice} من {data.length}
+                    عرض {slice} من {data?.length}
                   </span>
                   <button
                     onClick={() => handleSliceChange(slice + 6)}
-                    disabled={slice >= data.length}
+                    disabled={slice >= (data?.length ?? 0)}
                     className="rounded-md bg-gray-200 px-3 py-1 text-gray-700 hover:bg-gray-300 disabled:opacity-50"
                   >
                     التالي
@@ -218,18 +215,21 @@ const Navbar = (props: {
           {/* القائمة الشخصية */}
           <Dropdown
             button={<FaUser />}
-            classNames={'py-2 top-8 -left-[180px] w-max'}
+            classNames={'py-2 top-8 -right-[180px] w-max'}
           >
-            <div className="flex h-48 w-56 flex-col justify-start rounded-[20px] bg-white bg-cover bg-no-repeat shadow-xl dark:bg-navy-700 dark:text-white">
-              <div className="ml-4 mt-3">
-                <div className="flex items-center gap-2">
+            <div
+              className="flex h-48 w-56 flex-col justify-start rounded-[20px] bg-white bg-cover bg-no-repeat shadow-xl dark:bg-navy-700 dark:text-white"
+              dir="rtl"
+            >
+              <div className="mr-4 mt-3">
+                <div className="flex items-center gap-2 justify-end">
                   <p className="text-sm font-bold text-navy-700 dark:text-white">
                     👋 أهلاً
                   </p>
                 </div>
               </div>
               <div className="mt-3 h-px w-full bg-gray-200 dark:bg-white/20" />
-              <div className="ml-4 mt-3 flex flex-col">
+              <div className="mr-4 mt-3 flex flex-col items-end">
                 <button
                   onClick={handleLogout}
                   className="mt-3 text-sm font-medium text-red-500 hover:text-red-500"

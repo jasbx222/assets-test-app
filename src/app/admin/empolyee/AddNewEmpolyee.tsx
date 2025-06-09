@@ -2,9 +2,10 @@
 
 import React, { useEffect, useState } from 'react';
 import Inputs from './Inputs';
-import axios from 'axios';
+// import axios from 'axios';
 import usePost from 'hooks/usePost';
 import useGet from 'hooks/useGet';
+import Swal from 'sweetalert2';
 
 type Entity = { id: number; name: string };
 type Department = { id: number; name: string };
@@ -31,10 +32,11 @@ const AddNewEmpolyee = ({ onClose }: { onClose: () => void }) => {
   );
 
   const { add, response } = usePost();
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit =async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const payload = {
+try {
+      const payload = {
       name: name,
       phone,
       password,
@@ -43,7 +45,15 @@ const AddNewEmpolyee = ({ onClose }: { onClose: () => void }) => {
       department_id: Number(departmentId),
       division_id: Number(divisionId),
     };
-    add(`${process.env.NEXT_PUBLIC_BASE_URL}/clients`, payload, false);
+    await add(`${process.env.NEXT_PUBLIC_BASE_URL}/clients`, payload, false)
+
+} catch (error) {
+     Swal.fire({
+      title:`${error.message}`,
+icon:"error",
+  timer: 2000  
+      })
+}
   };
 
   return (

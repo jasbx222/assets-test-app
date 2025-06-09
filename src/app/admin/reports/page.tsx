@@ -44,17 +44,20 @@ export default function ReportsPage() {
   const uniqueDivisions = [...new Set(reports.map(r => r.client_id?.division?.name).filter(Boolean))];
   const uniqueDepartments = [...new Set(reports.map(r => r.client_id?.department?.name).filter(Boolean))];
 
-  const applyFilters = () => {
-    const filtered = reports.filter((report) => {
-      const matchesText = report.client_id?.name?.toLowerCase().includes(filterText.toLowerCase());
-      const matchesRoom = selectedRoom ? report.room_id?.name === selectedRoom : true;
-      const matchesDivision = selectedDivision ? report.client_id?.division?.name === selectedDivision : true;
-      const matchesDepartment = selectedDepartment ? report.client_id?.department?.name === selectedDepartment : true;
-      return matchesText && matchesRoom && matchesDivision && matchesDepartment;
-    });
-    setFilteredReports(filtered);
-    setCurrentPage(1);
-  };
+const applyFilters = () => {
+  const filtered = reports.filter((report) => {
+    const matchesText = report.client_id?.name?.toLowerCase().includes(filterText.toLowerCase());
+    const matchesRoom = !selectedRoom || report.room_id?.name === selectedRoom;
+    const matchesDivision = !selectedDivision || report.client_id?.division?.name === selectedDivision;
+    const matchesDepartment = !selectedDepartment || report.client_id?.department?.name === selectedDepartment;
+
+    return matchesText && matchesRoom && matchesDivision && matchesDepartment;
+  });
+
+  setFilteredReports(filtered);
+  setCurrentPage(1);
+};
+
 
   useEffect(() => {
     applyFilters();

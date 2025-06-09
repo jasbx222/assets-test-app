@@ -1,6 +1,5 @@
-// components/admin/empolyees/TableEmpolyee.tsx
 'use client';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Empolyee } from 'types/data';
 import { BsEye, BsPen } from 'react-icons/bs';
 import { FiDelete } from 'react-icons/fi';
@@ -10,47 +9,68 @@ import Link from 'next/link';
 
 const TableEmpolyee = ({ items = [] }: { items: Empolyee[] }) => {
   const route = useRouter();
-  //   {
-  //     slice من العميل
-  //   }
-
-  const [slice, setSlice] = useState(10); // يمكنك تعديل هذا الرقم حسب الحاجة
-  const handleSliceChange = (newSlice: number) => {
-    setSlice(newSlice);
-  };
+  const [slice, setSlice] = useState(10);
   const { remove } = useDelete();
-  const handleDelete = (id: string) => {
-    // هنا يمكنك إضافة منطق حذف الموظف
-    remove(`
-        ${process.env.NEXT_PUBLIC_BASE_URL}/clients/${id}`);
 
-    // بعد الحذف، يمكنك تحديث الحالة أو إعادة تحميل البيانات
+  // حالات البحث
+  const [searchName, setSearchName] = useState('');
+  const [searchPhone, setSearchPhone] = useState('');
+
+  const handleDelete = (id: string) => {
+    remove(`${process.env.NEXT_PUBLIC_BASE_URL}/clients/${id}`);
     route.refresh();
   };
+
+  // فلترة البيانات حسب الاسم ورقم الهاتف
+  const filteredItems = useMemo(() => {
+    return items.filter(
+      (item) =>
+        item.name.toLowerCase().includes(searchName.toLowerCase()) &&
+        item.phone.includes(searchPhone),
+    );
+  }, [items, searchName, searchPhone]);
+
   if (!items || items.length === 0) {
     return (
       <p className="py-4 text-center text-gray-500">لا يوجد موظفين حالياً</p>
     );
   }
+
   return (
     <div className="w-full overflow-x-auto">
+      {/* حقول البحث */}
+      <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-end">
+        <input
+          type="text"
+          placeholder="ابحث بالاسم"
+          value={searchName}
+          onChange={(e) => setSearchName(e.target.value)}
+          className="w-full rounded-md border border-gray-300 px-3 py-2 text-right placeholder:text-gray-400 dark:border-navy-600 dark:bg-navy-800 dark:text-white md:w-48"
+        />
+        <input
+          type="text"
+          placeholder="ابحث برقم الهاتف"
+          value={searchPhone}
+          onChange={(e) => setSearchPhone(e.target.value)}
+          className="w-full rounded-md border border-gray-300 px-3 py-2 text-right placeholder:text-gray-400 dark:border-navy-600 dark:bg-navy-800 dark:text-white md:ml-2 md:w-48"
+        />
+      </div>
+
       <table className="min-w-full table-auto rounded-md border border-gray-200 bg-white text-right shadow dark:bg-navy-800">
-        <thead className="bg-gray-100  dark:bg-navy-800">
+        <thead className="bg-gray-100 dark:bg-navy-800">
           <tr className="text-gray-700 dark:text-white">
             <th className="px-4 py-2 dark:text-white ">الاسم</th>
             <th className="px-4 py-2">الهاتف</th>
-            {/* <th className="px-4 py-2">تاريخ الإنشاء</th> */}
             <th className="px-4 py-2">تاريخ الانتهاء</th>
             <th className="px-4 py-2">الحالة</th>
             <th className="px-4 py-2 text-center">الاجرائات</th>
           </tr>
         </thead>
-        <tbody className=" dark:text-white">
-          {items.slice(0, slice).map((item, index) => (
+        <tbody className="dark:text-white">
+          {filteredItems.slice(0, slice).map((item, index) => (
             <tr key={index} className={`${!item.is_active ? 'bg-red-50' : ''}`}>
               <td className="px-4 py-3">{item.name}</td>
               <td className="px-4 py-3">{item.phone}</td>
-              {/* <td className="px-4 py-3">{item.created_at}</td>/ */}
               <td className="px-4 py-3">{item.expiry_date}</td>
               <td className="px-4 py-3">
                 <span
@@ -86,22 +106,21 @@ const TableEmpolyee = ({ items = [] }: { items: Empolyee[] }) => {
         </tbody>
         <tfoot>
           <tr>
-            {/* {العميل يدخل الرقم من عنده } */}
             <td colSpan={6} className="px-4 py-2 text-center">
               <div className="flex items-center justify-center space-x-2">
                 <button
-                  onClick={() => handleSliceChange(slice - 10)}
+                  onClick={() => setSlice(slice - 10)}
                   disabled={slice <= 10}
                   className="rounded-md bg-gray-200 px-3 py-1 text-gray-700 hover:bg-gray-300 disabled:opacity-50"
                 >
                   السابق
                 </button>
                 <span className="text-sm text-gray-600">
-                  عرض {slice} من {items.length}
+                  عرض {slice} من {filteredItems.length}
                 </span>
                 <button
-                  onClick={() => handleSliceChange(slice + 10)}
-                  disabled={slice >= items.length}
+                  onClick={() => setSlice(slice + 10)}
+                  disabled={slice >= filteredItems.length}
                   className="rounded-md bg-gray-200 px-3 py-1 text-gray-700 hover:bg-gray-300 disabled:opacity-50"
                 >
                   التالي

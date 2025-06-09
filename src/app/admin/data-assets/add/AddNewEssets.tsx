@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import usePost from 'hooks/usePost';
 import { HiX } from 'react-icons/hi';
+import Swal from 'sweetalert2';
 interface AddNewEssetsProps {
   isOpen: boolean;
   onClose: () => void;
@@ -25,16 +26,24 @@ const AddNewEssets: React.FC<AddNewEssetsProps> = ({ isOpen, onClose }) => {
       };
 
       await add(`${process.env.NEXT_PUBLIC_BASE_URL}/assets`, newAsset, true);
-      console.log('✅ تم إضافة الأصل بنجاح');
+      Swal.fire({
+      title: 'تم اضافة الاصل',
+icon:"success",
+  timer: 2000  
+      })
       onClose();
     } catch (error) {
-      console.error('❌ فشل في الإضافة:', error);
+    Swal.fire({
+      title: `${error.message}`,
+icon:"error",
+  timer: 2000  
+      })
     }
   };
 
   return (
     <div className="bg-black fixed inset-0 z-50 flex items-center justify-center bg-opacity-50 dark:bg-opacity-80">
-      <div className="relative w-full max-w-md rounded-lg bg-white p-6 shadow-lg dark:bg-navy-800">
+      <div className="relative w-full grid grid-cols-2 gap-5 max-w-md rounded-lg bg-white p-6 shadow-lg dark:bg-navy-800">
         <button
           onClick={onClose}
           className="absolute right-3 top-3 text-gray-500"
