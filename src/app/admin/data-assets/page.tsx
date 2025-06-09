@@ -4,12 +4,12 @@ import tableDataDevelopment from 'variables/data-tables/tableDataDevelopment';
 import tableDataCheck from 'variables/data-tables/tableDataCheck';
 import AssetsTable from 'components/admin/data-assets/AssetsTable';
 import tableDataColumns from 'variables/data-tables/tableDataColumns';
-import tableDataComplex from 'variables/data-tables/tableDataComplex';
+// import tableDataComplex from 'variables/data-tables/tableDataComplex';
 import DevelopmentTable from 'components/admin/data-assets/DevelopmentTable';
 import ColumnsTable from 'components/admin/data-assets/ColumnsTable';
 import ComplexTable from 'components/admin/data-assets/ComplexTable';
 // import AddNewEmpolyee from '../nft-marketplace/AddNewEmpolyee';
-import AddNewEssets from './AddNewEssets';
+import AddNewEssets from './add/AddNewEssets';
 import useGet from 'hooks/useGet';
 import { useRouter, useSearchParams } from 'next/navigation';
 

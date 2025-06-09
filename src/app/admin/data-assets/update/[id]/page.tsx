@@ -1,16 +1,10 @@
 'use client';
 import React from 'react';
-import usePost from 'hooks/usePost';
-import useUpdate from 'hooks/useUpdate';
 import { useParams, useRouter } from 'next/navigation';
 import useUpdateFaq from 'hooks/useUpdateFaq';
 import { HiX } from 'react-icons/hi';
-interface AddNewEssetsProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
 
-const Page: React.FC<AddNewEssetsProps> = () => {
+const Page = () => {
   const { id } = useParams();
   const { update } = useUpdateFaq();
   const [name, setName] = React.useState('');
@@ -31,30 +25,27 @@ const Page: React.FC<AddNewEssetsProps> = () => {
       await update(
         `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${id}`,
         newAsset,
-        true,
+        true
       );
-      console.log('✅ تم إضافة الأصل بنجاح');
+      console.log('✅ تم تحديث الأصل بنجاح');
       route.push('/admin/data-assets');
     } catch (error) {
-      console.error('❌ فشل في الإضافة:', error);
+      console.error('❌ فشل في التحديث:', error);
     }
   };
 
   return (
     <div className="bg-black fixed inset-0 z-50 flex items-center justify-center bg-opacity-50 dark:bg-opacity-80">
       <div className="relative w-full max-w-md rounded-lg bg-white p-6 shadow-lg dark:bg-navy-800">
-        <h2 className="text-lg font-semibold  text-center text-gray-800 dark:text-white">
+        <h2 className="text-lg font-semibold text-center text-gray-800 dark:text-white">
           تعديل الأصل
         </h2>
-            <button
-          onClick={
-            () => route.push('/admin/data-assets')
-          }
+        <button
+          onClick={() => route.push('/admin/data-assets')}
           className="absolute right-3 top-3 text-gray-500"
         >
           <HiX className="text-2xl" />
         </button>
-
 
         <form className="mt-5 space-y-4" onSubmit={handleAddNewAssetsFunction}>
           <div>
@@ -97,7 +88,7 @@ const Page: React.FC<AddNewEssetsProps> = () => {
             type="submit"
             className="w-full rounded-md bg-brand-500 py-2 font-semibold text-white"
           >
-            إضافة أصل
+            تحديث الأصل
           </button>
         </form>
       </div>
