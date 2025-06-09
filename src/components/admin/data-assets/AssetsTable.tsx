@@ -133,6 +133,11 @@ function AssetsTable({
                   {activeActionIndex === index && (
                     <div className="ring-black absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-opacity-5">
                       <div className="py-1">
+                     <Link
+                     href={
+                      `/admin/data-assets/show/${item.id}`
+                     }
+                     >
                         <button
                           onClick={() =>
                             console.log(`عرض التفاصيل: ${item.name}`)
@@ -140,7 +145,7 @@ function AssetsTable({
                           className="w-full px-4 py-2 text-right text-sm text-gray-700 hover:bg-gray-100"
                         >
                           عرض التفاصيل
-                        </button>
+                        </button></Link>
                         <Link href={`/admin/data-assets/update/${item.id}`}>
                           <button
                             onClick={() => console.log(`تعديل: ${item.name}`)}

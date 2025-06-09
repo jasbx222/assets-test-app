@@ -1,3 +1,4 @@
+import { NotepadText } from 'lucide-react';
 import React from 'react';
 import { BsBookHalf } from 'react-icons/bs';
 import { FaUser } from 'react-icons/fa';
@@ -38,7 +39,7 @@ const routes = [
     name:'ادارة التقارير ',
     layout: '/admin',
     path: 'reports',
-    icon: <BsBookHalf className="h-6 w-6" />,
+    icon: <NotepadText/>
   },
   // {
   //   name: 'Sign In',

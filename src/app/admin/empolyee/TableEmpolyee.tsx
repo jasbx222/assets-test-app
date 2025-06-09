@@ -2,14 +2,14 @@
 'use client';
 import { useState } from 'react';
 import { Empolyee } from 'types/data';
-import {  BsEye, BsPen } from 'react-icons/bs';
+import { BsEye, BsPen } from 'react-icons/bs';
 import { FiDelete } from 'react-icons/fi';
 import useDelete from 'hooks/useDelete';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-const route = useRouter();
+
 const TableEmpolyee = ({ items = [] }: { items: Empolyee[] }) => {
- 
+  const route = useRouter();
   //   {
   //     slice من العميل
   //   }
@@ -18,25 +18,25 @@ const TableEmpolyee = ({ items = [] }: { items: Empolyee[] }) => {
   const handleSliceChange = (newSlice: number) => {
     setSlice(newSlice);
   };
-  const {remove}=useDelete();
+  const { remove } = useDelete();
   const handleDelete = (id: string) => {
     // هنا يمكنك إضافة منطق حذف الموظف
     remove(`
-        ${process.env.NEXT_PUBLIC_BASE_URL}/clients/${id}`,);
-  
+        ${process.env.NEXT_PUBLIC_BASE_URL}/clients/${id}`);
+
     // بعد الحذف، يمكنك تحديث الحالة أو إعادة تحميل البيانات
- route.refresh();
-    }
- if (!items || items.length === 0) {
+    route.refresh();
+  };
+  if (!items || items.length === 0) {
     return (
       <p className="py-4 text-center text-gray-500">لا يوجد موظفين حالياً</p>
     );
   }
   return (
     <div className="w-full overflow-x-auto">
-      <table className="min-w-full table-auto rounded-md border border-gray-200 bg-white dark:bg-navy-800 text-right shadow">
+      <table className="min-w-full table-auto rounded-md border border-gray-200 bg-white text-right shadow dark:bg-navy-800">
         <thead className="bg-gray-100  dark:bg-navy-800">
-          <tr className='text-gray-700 dark:text-white'>
+          <tr className="text-gray-700 dark:text-white">
             <th className="px-4 py-2 dark:text-white ">الاسم</th>
             <th className="px-4 py-2">الهاتف</th>
             {/* <th className="px-4 py-2">تاريخ الإنشاء</th> */}
@@ -63,12 +63,14 @@ const TableEmpolyee = ({ items = [] }: { items: Empolyee[] }) => {
                   {item.is_active ? 'نشط' : 'غير نشط'}
                 </span>
               </td>
-              <td className="px-4 py-3 text-center grid grid-cols-3 gap-2">
-                <button onClick={()=>handleDelete(item.id)} className="text-gray-500 hover:text-red-500">
+              <td className="grid grid-cols-3 gap-2 px-4 py-3 text-center">
+                <button
+                  onClick={() => handleDelete(item.id)}
+                  className="text-gray-500 hover:text-red-500"
+                >
                   <FiDelete className="inline-block text-lg" />
                 </button>
-             <Link href={`/admin/empolyee/update/${item.id}`}>
-                    
+                <Link href={`/admin/empolyee/update/${item.id}`}>
                   <button className="text-gray-500 hover:text-blue-500">
                     <BsPen className="inline-block text-lg" />
                   </button>
