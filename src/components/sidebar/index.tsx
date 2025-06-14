@@ -10,7 +10,7 @@ function SidebarHorizon(props: { routes: IRoute[]; [x: string]: any }) {
   const { routes, open, setOpen } = props;
   
   return (
-     <div
+     <div dir='rtl'
       className={`sm:none duration-175 ${
         open ? 'block' : ' hidden'
         } linear fixed z-50 right-0 md:block flex h-full flex-col bg-white pb-10 shadow-2xl shadow-white/5 transition-all dark:!bg-navy-800 dark:text-white md:!z-50 lg:!z-50 xl:!z-0 
@@ -33,7 +33,7 @@ function SidebarHorizon(props: { routes: IRoute[]; [x: string]: any }) {
       <div className="mb-7 mt-[58px] h-px bg-gray-300 dark:bg-white/30" />
       {/* Nav item */}
 
-      <ul className="mb-auto pt-1">
+      <ul className="mb-auto pt-1" dir='rtl'>
         <Links routes={routes} />
       </ul>
 

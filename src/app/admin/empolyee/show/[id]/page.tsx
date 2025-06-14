@@ -104,12 +104,12 @@ const EmployeeDetails = () => {
           icon={<Building2 size={20} />}
         />
         <DetailRow
-          label="القسم الرئيسي"
-          value={employee?.departmen?.name || '—'}
+          label="القسم "
+          value={employee?.department?.name || '—'}
           icon={<Building2 size={20} />}
         />
         <DetailRow
-          label="القسم الفرعي"
+          label=" الشعبة"
           value={employee?.division?.name || '—'}
           icon={<Building2 size={20} />}
         />

@@ -12,6 +12,7 @@ import {
   MdBarChart,
   MdPerson,
   MdLock,
+  MdAssignmentReturn,
 } from 'react-icons/md';
 
 const routes = [
@@ -40,6 +41,12 @@ const routes = [
     layout: '/admin',
     path: 'reports',
     icon: <NotepadText/>
+  },
+  {
+    name:'ادارة الاصول ',
+    layout: '/admin',
+    path: 'manage_asset',
+    icon: <MdAssignmentReturn/>
   },
   // {
   //   name: 'Sign In',

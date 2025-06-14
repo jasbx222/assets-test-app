@@ -19,4 +19,9 @@ const analytics = getAnalytics(app);
 const messaging = getMessaging(app);
 const storage = getStorage(app); // ✅ أضف هذا
 
-export { app, analytics, messaging, storage };
+// export { app, analytics, messaging, storage };
+import { getFirestore } from 'firebase/firestore';
+
+const db = getFirestore(app);
+
+export { app, analytics, messaging, storage, db };

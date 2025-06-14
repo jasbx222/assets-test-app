@@ -57,7 +57,7 @@ function AssetsTable({
     setActiveActionIndex(null);
   };
 
-  // دالة تحديث الفلاتر في الرابط مع إعادة تعيين الصفحة إلى 1
+ 
   const handleFilterChange = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString());
     if (value) {
@@ -73,70 +73,67 @@ function AssetsTable({
     <Card extra="w-full h-full sm:overflow-auto px-6">
       <header className="relative flex flex-col sm:flex-row sm:items-center justify-between pt-4 gap-4">
        
-        <div className="flex flex-wrap gap-3 items-center">
-          <select
-            value={departmentFilter}
-            onChange={(e) => handleFilterChange('department', e.target.value)}
-            className="rounded border px-3 py-1"
-          >
-            <option value="">كل الأقسام</option>
-            {departments.map((dep) => (
-              <option key={dep} value={dep}>
-                {dep}
-              </option>
-            ))}
-          </select>
+     <div className="flex flex-col sm:flex-row flex-wrap gap-3 items-stretch sm:items-center">
+  {/* فلترة حسب القسم */}
+  <select
+    value={departmentFilter}
+    onChange={(e: any) => handleFilterChange('department', e.target.value)}
+    className="rounded border px-3 py-2 min-w-[180px]"
+  >
+    <option value="">كل الأقسام</option>
+    {departments.map((dep: any) => (
+      <option key={dep.id || dep} value={dep.id || dep}>
+        {dep.name || dep}
+      </option>
+    ))}
+  </select>
 
-          <select
-            value={roomFilter}
-            onChange={(e) => handleFilterChange('room', e.target.value)}
-            className="rounded border px-3 py-1"
-          >
-            <option value="">كل الغرف</option>
-            {rooms.map((room) => (
-              <option key={room} value={room}>
-                {room}
-              </option>
-            ))}
-          </select>
+  {/* فلترة حسب الغرفة */}
+  <select
+    value={roomFilter}
+    onChange={(e: any) => handleFilterChange('room', e.target.value)}
+    className="rounded border px-3 py-2 min-w-[180px]"
+  >
+    <option value="">كل الغرف</option>
+    {rooms.map((room: any) => (
+      <option key={room.id || room} value={room.id || room}>
+        {room.name || room}
+      </option>
+    ))}
+  </select>
 
-          <select
-            value={groupFilter}
-            onChange={(e) => handleFilterChange('group', e.target.value)}
-            className="rounded border px-3 py-1"
-          >
-            <option value="">كل الشعب</option>
-            {groups.map((group) => (
-              <option key={group} value={group}>
-                {group}
-              </option>
-            ))}
-          </select>
-        </div>
+  {/* فلترة حسب الشعبة */}
+  <select
+    value={groupFilter}
+    onChange={(e: any) => handleFilterChange('entities', e.target.value)}
+    className="rounded border px-3 py-2 min-w-[180px]"
+  >
+    <option value="">كل الشعب</option>
+    {groups.map((group: any) => (
+      <option key={group.id || group} value={group.id || group}>
+        {group.name || group}
+      </option>
+    ))}
+  </select>
+</div>
+
 
         {/* أزرار إضافة وتصدير */}
-        <div className="flex items-center justify-around space-x-4">
+        <div className="flex items-center justify-around space-x-6">
           <button
             onClick={handleAddNewAssets}
             className="rounded bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             إضافة أصل جديد
           </button>
-          <button
-            onClick={() => {
-              console.log('تصدير البيانات إلى Excel');
-            }}
-            className="rounded bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            تصدير إلى Excel
-          </button>
+       
         </div>
       </header>
 
       <div className="mt-8">
         <table className="w-full text-right">
           <thead>
-            <tr className="border-b border-gray-400 dark:border-white/30">
+            <tr className="border-b border-gray-400   dark:border-white/30">
               <th className="p-2 text-sm font-bold text-gray-600 dark:text-white">الصورة</th>
               <th className="p-2 text-sm font-bold text-gray-600 dark:text-white">اسم الأصل</th>
               <th className="p-2 text-sm font-bold text-gray-600 dark:text-white">ملاحظات</th>

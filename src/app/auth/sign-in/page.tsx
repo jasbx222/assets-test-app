@@ -1,18 +1,21 @@
 'use client';
 
-import React, { FormEvent } from 'react';
+import React, { FormEvent, useState } from 'react';
 import InputField from 'components/fields/InputField';
 import Default from 'components/auth/variants/DefaultAuthLayout';
 import { useRouter } from 'next/navigation';
+import { Eye, EyeOff } from 'lucide-react';
 import axios from 'axios';
-import { getMessaging, getToken as getFCMToken } from "firebase/messaging";
+import { getMessaging, getToken as getFCMToken } from 'firebase/messaging';
 import { app } from '../../firebase';
 
 function SignInDefault() {
-  const [email, setEmail] = React.useState('');
-  const [password, setPass] = React.useState('');
-  const [error, setErr] = React.useState<string | null>(null);
-  const [loading, setLoading] = React.useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPass] = useState('');
+  const [error, setErr] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
   const router = useRouter();
 
   const handleSubmit = async (e: FormEvent) => {
@@ -89,20 +92,30 @@ function SignInDefault() {
                 label="البريد الإلكتروني*"
                 placeholder="example@domain.com"
                 id="email"
-                type="text"
+                type="email"
                 value={email}
-                onChange={(e: any) => setEmail(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
               />
 
-              <InputField
-                variant="auth"
-                label="كلمة المرور*"
-                placeholder="••••••••"
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e: any) => setPass(e.target.value)}
-              />
+              <div className="relative">
+                <InputField
+                  variant="auth"
+                  label="كلمة المرور*"
+                  placeholder="••••••••"
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPass(e.target.value)}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute left-0 top-[45px] text-gray-500 hover:text-gray-700 dark:text-gray-300"
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
 
               <button
                 type="submit"
@@ -124,4 +137,3 @@ function SignInDefault() {
 }
 
 export default SignInDefault;
-                                                                                  

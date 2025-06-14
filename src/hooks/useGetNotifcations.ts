@@ -31,8 +31,8 @@ const useGetnotific = <T>(url: string) => {
     fetchData();
 
     // refresh every 3 seconds
-    const interval = setInterval(fetchData, 3000);
-    return () => clearInterval(interval);
+    // const interval = setInterval(fetchData, 3000);
+    // return () => clearInterval(interval);
   }, [url]);
 
   return { data, loading };

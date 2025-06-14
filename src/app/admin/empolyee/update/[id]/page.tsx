@@ -1,10 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Inputs from '../../Inputs';
 import useGet from 'hooks/useGet';
 import useUpdate from 'hooks/useUpdate';
-import { redirect, useParams } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
+import useShow from 'hooks/useShow';
+import { EmployeeShow } from '../../../../../types/data';
 
 type Entity = { id: number; name: string };
 type Department = { id: number; name: string };
@@ -13,6 +15,12 @@ type Division = { id: number; name: string };
 const Page = () => {
   const params = useParams();
   const id = params?.id as string;
+  const router = useRouter();
+
+  const { data: empolyee } = useShow<EmployeeShow>(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/clients`,
+    id
+  );
 
   const [name, setFullName] = useState('');
   const [phone, setPhone] = useState('');
@@ -21,6 +29,17 @@ const Page = () => {
   const [departmentId, setDepartmentId] = useState('');
   const [divisionId, setDivisionId] = useState('');
   const [password, setPass] = useState('');
+
+  useEffect(() => {
+    if (empolyee) {
+      setFullName(empolyee.name || '');
+      setPhone(empolyee.phone || '');
+      setExpiryDate(empolyee.expiry_date || '');
+      setEntityId(empolyee.entity?.id?.toString() || '');
+      setDepartmentId(empolyee.department?.id?.toString() || '');
+      setDivisionId(empolyee.division?.id?.toString() || '');
+    }
+  }, [empolyee]);
 
   const { data: entities = [] } = useGet<Entity>(
     `${process.env.NEXT_PUBLIC_BASE_URL}/entities`
@@ -56,9 +75,7 @@ const Page = () => {
     <div className="flex h-full w-full flex-col items-center justify-center">
       <button
         className="text-gray-900 hover:text-gray-700 dark:text-gray-200 dark:hover:text-white"
-        onClick={
-          ()=>redirect('/empolyee')
-        }
+        onClick={() => router.push('/empolyee')}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -77,15 +94,12 @@ const Page = () => {
       </button>
 
       {response && (
-        <div className="mb-2 text-green-500">تم إضافة الموظف بنجاح</div>
+        <div className="mb-2 text-green-500">تم التعديل الموظف بنجاح</div>
       )}
 
       <h1 className="text-2xl font-bold text-navy-700 dark:text-white">
-        إضافة موظف جديد
+        تعديل معلومات الموظف
       </h1>
-      <p className="mt-2 text-base text-gray-600 dark:text-gray-400">
-        يمكنك إضافة موظف جديد من خلال النموذج التالي
-      </p>
 
       <div className="mt-5 w-full max-w-md">
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -123,14 +137,14 @@ const Page = () => {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-white">
-              الكيان
+              الهيئة
             </label>
             <select
               className="w-full rounded border px-3 py-2 dark:bg-navy-700 dark:text-white"
               value={entityId}
               onChange={(e) => setEntityId(e.target.value)}
             >
-              <option value="">اختر الكيان</option>
+              <option value="">اختر الهيئة</option>
               {entities.map((e) => (
                 <option key={e.id} value={e.id}>
                   {e.name}
@@ -159,14 +173,14 @@ const Page = () => {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-white">
-              القسم الفرعي
+              الشعبة
             </label>
             <select
               className="w-full rounded border px-3 py-2 dark:bg-navy-700 dark:text-white"
               value={divisionId}
               onChange={(e) => setDivisionId(e.target.value)}
             >
-              <option value="">اختر القسم الفرعي</option>
+              <option value="">اختر الشعبة</option>
               {divisionsData.map((d) => (
                 <option key={d.id} value={d.id}>
                   {d.name}
@@ -179,7 +193,7 @@ const Page = () => {
             type="submit"
             className="h-[40px] w-full rounded-md bg-brand-500 font-semibold text-white hover:bg-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
           >
-            إضافة موظف
+            تعديل موظف
           </button>
         </form>
       </div>

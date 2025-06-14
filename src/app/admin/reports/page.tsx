@@ -2,36 +2,38 @@
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import * as XLSX from 'xlsx';
 import { useRouter } from 'next/navigation';
+import { handleExport } from 'hooks/useExportToEx';
+import TableReports from './TableReports';
 
-export default function ReportsPage() {
+export default function Page() {
   const [reports, setReports] = useState<any[]>([]);
-  const [filteredReports, setFilteredReports] = useState<any[]>([]);
+  const [divisions, setDivisions] = useState<any[]>([]);
+  const [filters, setFilters] = useState({ division: '', department: '' });
   const [currentPage, setCurrentPage] = useState(1);
-  const [filterText, setFilterText] = useState('');
-  const [selectedRoom, setSelectedRoom] = useState('');
-  const [selectedDivision, setSelectedDivision] = useState('');
-  const [selectedDepartment, setSelectedDepartment] = useState('');
   const reportsPerPage = 5;
-
   const router = useRouter();
 
+  // جلب التقارير
   useEffect(() => {
     const fetchReports = async () => {
       try {
-        const response = await axios.get('https://jaradalasul.com/admin/v1/reports', {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-            Accept: 'application/json; charset=UTF-8',
-          },
-        });
+        const response = await axios.get(
+          'https://jaradalasul.com/admin/v1/reports',
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+              Accept: 'application/json; charset=UTF-8',
+            },
+          }
+        );
 
         const sorted = response.data.data.sort(
-          (a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          (a: any, b: any) =>
+            new Date(b.created_at).getTime() -
+            new Date(a.created_at).getTime()
         );
         setReports(sorted);
-        setFilteredReports(sorted);
       } catch (error) {
         console.error('فشل تحميل التقارير:', error);
       }
@@ -40,187 +42,133 @@ export default function ReportsPage() {
     fetchReports();
   }, []);
 
-  const uniqueRooms = [...new Set(reports.map(r => r.room_id?.name).filter(Boolean))];
-  const uniqueDivisions = [...new Set(reports.map(r => r.client_id?.division?.name).filter(Boolean))];
-  const uniqueDepartments = [...new Set(reports.map(r => r.client_id?.department?.name).filter(Boolean))];
+  // جلب الأقسام والشعب
+  useEffect(() => {
+    const fetchDivisions = async () => {
+      try {
+        const response = await axios.get(
+          'https://jaradalasul.com/admin/v1/divisions',
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+              Accept: 'application/json; charset=UTF-8',
+            },
+          }
+        );
+        setDivisions(response.data.data);
+      } catch (error) {
+        console.error('فشل تحميل الأقسام والشعب:', error);
+      }
+    };
 
-const applyFilters = () => {
-  const filtered = reports.filter((report) => {
-    const matchesText = report.client_id?.name?.toLowerCase().includes(filterText.toLowerCase());
-    const matchesRoom = !selectedRoom || report.room_id?.name === selectedRoom;
-    const matchesDivision = !selectedDivision || report.client_id?.division?.name === selectedDivision;
-    const matchesDepartment = !selectedDepartment || report.client_id?.department?.name === selectedDepartment;
+    fetchDivisions();
+  }, []);
 
-    return matchesText && matchesRoom && matchesDivision && matchesDepartment;
+  // إعداد خيارات الفلاتر
+  const uniqueDepartments = Array.from(
+    new Set(divisions.map((d) => d.department?.name))
+  ).filter(Boolean);
+
+  const uniqueDivisions = Array.from(
+    new Set(divisions.map((d) => d.name))
+  ).filter(Boolean);
+
+  // فلترة التقارير
+  const filteredData = reports.filter((r) => {
+    const division = r?.room_id?.division?.name;
+    const department = r?.room_id?.division?.department?.name;
+
+    return (
+      (!filters.division || division === filters.division) &&
+      (!filters.department || department === filters.department)
+    );
   });
 
-  setFilteredReports(filtered);
-  setCurrentPage(1);
-};
-
-
-  useEffect(() => {
-    applyFilters();
-  }, [filterText, selectedRoom, selectedDivision, selectedDepartment]);
-
-  const handleExport = () => {
-    const flatData = filteredReports.flatMap((report) =>
-      report.result?.items_details?.map((item: any) => ({
-        'رقم التقرير': report.id,
-        'اسم المستخدم': report.client_id?.name || '-',
-        'اسم الغرفة': report.room_id?.name || '-',
-        'الحالة': item.status,
-        'الوسم': item.label,
-        'الاسم': item.asset_name,
-        'في الغرفة المطلوبة': item.in_requested_room ? 'نعم' : 'لا',
-      })) || []
-    );
-
-    const worksheet = XLSX.utils.json_to_sheet(flatData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'تفاصيل التقارير');
-    XLSX.writeFile(workbook, 'reports-details.xlsx');
-  };
-
+  // تحديد التقارير حسب الصفحة
   const indexOfLastReport = currentPage * reportsPerPage;
   const indexOfFirstReport = indexOfLastReport - reportsPerPage;
-  const currentReports = filteredReports.slice(indexOfFirstReport, indexOfLastReport);
+  const currentReports = filteredData.slice(
+    indexOfFirstReport,
+    indexOfLastReport
+  );
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-  // إجراءات الأزرار
   const handleViewDetails = (id: number) => {
-    router.push(`/admin/reports/show/${id}`); // صفحة تفاصيل التقرير
+    router.push(`/admin/reports/show/${id}`);
   };
 
- 
-
- 
-
   return (
-    <div className="rtl p-6 space-y-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
+    <div className="rtl min-h-screen space-y-6 bg-gray-50 p-6 dark:bg-gray-900">
+      {/* العنوان والتصدير */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">التقارير</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-300">عرض تقارير الجرد حسب المستخدمين والغرف</p>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+            التقارير
+          </h1>
+          <p className="text-sm text-gray-500 dark:text-gray-300">
+            عرض تقارير الجرد حسب القسم والشعبة
+          </p>
         </div>
         <button
-          onClick={handleExport}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
+          onClick={() => handleExport(filteredData)}
+          className="rounded-lg bg-blue-600 px-4 py-2 text-white shadow transition hover:bg-blue-700"
         >
           تصدير Excel
         </button>
       </div>
 
-      {/* فلاتر البحث */}
-      <div className="flex flex-wrap gap-4 justify-end">
-        <input
-          type="text"
-          value={filterText}
-          onChange={(e) => setFilterText(e.target.value)}
-          placeholder="ابحث باسم المستخدم..."
-          className="p-2 border border-gray-300 rounded-lg w-64"
-        />
-
+      {/* واجهة الفلاتر */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <select
-          value={selectedRoom}
-          onChange={(e) => setSelectedRoom(e.target.value)}
-          className="p-2 border rounded-lg"
+          className="p-2 border rounded"
+          value={filters.department}
+          onChange={(e) =>
+            setFilters((prev) => ({ ...prev, department: e.target.value }))
+          }
         >
-          <option value="">كل الغرف</option>
-          {uniqueRooms.map((room) => (
-            <option key={room} value={room}>
-              {room}
+          <option value="">كل الأقسام</option>
+          {uniqueDepartments.map((dept, i) => (
+            <option key={i} value={dept}>
+              {dept}
             </option>
           ))}
         </select>
 
         <select
-          value={selectedDivision}
-          onChange={(e) => setSelectedDivision(e.target.value)}
-          className="p-2 border rounded-lg"
+          className="p-2 border rounded"
+          value={filters.division}
+          onChange={(e) =>
+            setFilters((prev) => ({ ...prev, division: e.target.value }))
+          }
         >
           <option value="">كل الشعب</option>
-          {uniqueDivisions.map((div) => (
-            <option key={div} value={div}>
+          {uniqueDivisions.map((div, i) => (
+            <option key={i} value={div}>
               {div}
             </option>
           ))}
         </select>
-
-        <select
-          value={selectedDepartment}
-          onChange={(e) => setSelectedDepartment(e.target.value)}
-          className="p-2 border rounded-lg"
-        >
-          <option value="">كل الأقسام</option>
-          {uniqueDepartments.map((dep) => (
-            <option key={dep} value={dep}>
-              {dep}
-            </option>
-          ))}
-        </select>
       </div>
 
-      <div className="overflow-x-auto rounded-lg shadow">
-        <table className="min-w-full bg-white text-sm text-right border">
-          <thead className="bg-gray-100 text-gray-700 font-semibold">
-            <tr>
-              <th className="px-4 py-3">#</th>
-              <th className="px-4 py-3">اسم المستخدم</th>
-              <th className="px-4 py-3">الشعبة</th>
-              <th className="px-4 py-3">الغرفة</th>
-              <th className="px-4 py-3">عدد العناصر</th>
-              <th className="px-4 py-3">جديدة</th>
-              <th className="px-4 py-3">تالفة</th>
-              <th className="px-4 py-3">موجودة</th>
-              <th className="px-4 py-3">الإجراءات</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentReports.map((report: any) => (
-              <tr key={report.id} className="border-b hover:bg-gray-50">
-                <td className="px-4 py-3 font-medium">#{report.id}</td>
-                <td className="px-4 py-3">{report.client_id?.name || '-'}</td>
-                <td className="px-4 py-3">{report.client_id?.division?.name || '-'}</td>
-                <td className="px-4 py-3">{report.room_id?.name || '-'}</td>
-                <td className="px-4 py-3">{report.result?.stats?.labels_count ?? '-'}</td>
-                <td className="px-4 py-3">{report.result?.stats?.new_count ?? '-'}</td>
-                <td className="px-4 py-3">{report.result?.stats?.damaged_count ?? '-'}</td>
-                <td className="px-4 py-3">{report.result?.stats?.found_count ?? '-'}</td>
-                <td className="px-4 py-3 flex gap-2 justify-end">
-                  <button
-                    onClick={() => handleViewDetails(report.id)}
-                    className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-                    title="عرض التفاصيل"
-                  >
-                    تفاصيل
-                  </button>
-            
-                </td>
-              </tr>
-            ))}
-            {currentReports.length === 0 && (
-              <tr>
-                <td colSpan={9} className="text-center p-4 text-gray-500">
-                  لا توجد تقارير مطابقة
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+      {/* جدول */}
+      <TableReports
+        currentReports={currentReports}
+        handleViewDetails={handleViewDetails}
+      />
 
       {/* Pagination */}
-      <div className="flex justify-center mt-6 space-x-2">
-        {Array.from({ length: Math.ceil(filteredReports.length / reportsPerPage) }).map((_, i) => (
+      <div className="mt-6 flex justify-center space-x-2" dir="rtl">
+        {Array.from({
+          length: Math.ceil(filteredData.length / reportsPerPage),
+        }).map((_, i) => (
           <button
             key={i}
             onClick={() => paginate(i + 1)}
-            className={`w-8 h-8 rounded-full text-sm font-semibold ${
+            className={`h-8 w-8 rounded-full text-sm font-semibold ${
               currentPage === i + 1
                 ? 'bg-blue-600 text-white'
-                : 'bg-white border border-gray-300 text-gray-700'
+                : 'border border-gray-300 bg-white text-gray-700'
             }`}
           >
             {i + 1}

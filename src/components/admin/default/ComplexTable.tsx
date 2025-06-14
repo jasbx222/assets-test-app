@@ -4,6 +4,7 @@ import Card from 'components/card';
 import { MdCancel, MdCheckCircle, MdOutlineError } from 'react-icons/md';
 import Pageination from 'components/pageination/Pageination';
 import * as XLSX from 'xlsx';
+import { AssetItem } from 'types/data';
 
 type AssetObj = {
   id: string;
@@ -32,7 +33,7 @@ type RowObj = {
 };
 
 type Props = {
-  tableData: RowObj[];
+  tableData:  AssetItem[];
   totalPages: number;
   currentPage: number;
   goToPage: (page: number) => void;
@@ -75,16 +76,16 @@ const AssetTable = ({ tableData, totalPages, currentPage, goToPage }: Props) => 
   const departments = [...new Set(tableData.map(item => item.room.division.department.name))];
 
   return (
-    <Card extra="w-full container top-10 h-full px-4 pb-6">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pt-4">
+    <Card extra="w-full container top-10 h-full px-4 pb-6" >
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pt-4" dir='rtl'>
         <div className="text-xl font-bold text-navy-700 dark:text-white">الأصول</div>
         <div className="flex flex-wrap gap-2">
           <select
             value={selectedDepartment}
             onChange={(e) => setSelectedDepartment(e.target.value)}
-            className="p-2 border rounded-md text-sm"
+            className="p-2 border rounded-md text-sm dark:text-navy-700"
           >
-            <option value="">كل الأقسام</option>
+            <option value="" className='dark:text-navy-700'>كل الأقسام</option>
             {departments.map((dep, idx) => (
               <option key={idx} value={dep}>{dep}</option>
             ))}
@@ -92,7 +93,8 @@ const AssetTable = ({ tableData, totalPages, currentPage, goToPage }: Props) => 
           <select
             value={selectedDivision}
             onChange={(e) => setSelectedDivision(e.target.value)}
-            className="p-2 border rounded-md text-sm"
+            className="p-2 border rounded-md text-sm dark:text-navy-700"
+     
           >
             <option value="">كل الشعب</option>
             {divisions.map((div, idx) => (
@@ -102,7 +104,7 @@ const AssetTable = ({ tableData, totalPages, currentPage, goToPage }: Props) => 
           <select
             value={selectedRoom}
             onChange={(e) => setSelectedRoom(e.target.value)}
-            className="p-2 border rounded-md text-sm"
+            className="p-2 border rounded-md dark:text-navy-600 text-sm"
           >
             <option value="">كل الغرف</option>
             {rooms.map((room, idx) => (
@@ -119,7 +121,7 @@ const AssetTable = ({ tableData, totalPages, currentPage, goToPage }: Props) => 
       </div>
 
       {/* جدول الأصول */}
-      <div className="mt-6 overflow-x-auto">
+      <div className="mt-6 overflow-x-auto" dir='rtl'> 
         <table className="w-full min-w-[600px] text-right">
           <thead>
             <tr className="border-b border-gray-300 dark:border-gray-600">
@@ -130,6 +132,8 @@ const AssetTable = ({ tableData, totalPages, currentPage, goToPage }: Props) => 
               <th className="py-3 px-4 text-sm font-bold text-gray-600 dark:text-white">الغرفة</th>
               <th className="py-3 px-4 text-sm font-bold text-gray-600 dark:text-white">الشعبة</th>
               <th className="py-3 px-4 text-sm font-bold text-gray-600 dark:text-white">القسم</th>
+            
+  
             </tr>
           </thead>
           <tbody>
@@ -146,7 +150,9 @@ const AssetTable = ({ tableData, totalPages, currentPage, goToPage }: Props) => 
                 <td className="py-3 px-4 text-sm">{row.label}</td>
                 <td className="py-3 px-4 text-sm">{row.room.name}</td>
                 <td className="py-3 px-4 text-sm">{row.room.division.name}</td>
-                <td className="py-3 px-4 text-sm">{row.room.division.department.name}</td>
+                <td className="py-3 px-4 text-sm">{row.room.division?.department.name}</td>
+         
+              
               </tr>
             ))}
           </tbody>

@@ -27,7 +27,7 @@ export default function AuthLayout({ children }: AuthProps) {
   }
 
   return (
-    <div className="relative float-right h-full min-h-screen w-full dark:!bg-navy-900">
+    <div className="relative float-right h-full min-h-screen w-full dark:!bg-navy-900" dir='rtl'>
       <main className="mx-auto min-h-screen">
         <FixedPlugin />
 

@@ -19,7 +19,7 @@ const Page = () => {
   );
 
   return (
-    <div className="mt-3 grid h-full w-full ">
+    <div className="mt-3 grid h-full w-full " dir='rtl'>
       {/* القسم الأيسر - البانر + الموظفين المضافين حديثاً */}
       <div className="h-fit w-full">
         <Banner />

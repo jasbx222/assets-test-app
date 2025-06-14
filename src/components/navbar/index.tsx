@@ -78,15 +78,17 @@ const Navbar = (props: {
   return (
     <>
       {/* إشعار يطفو */}
-      <AnimatePresence>
+
+       <AnimatePresence  >
         {popupVisible && data && data[0] && (
           <Link href={`/admin/reports/show/${data[0].notification.report_id}`}>
-            <motion.div
+       <div  className='flex justify-center items-center'>
+             <motion.div
               initial={{ opacity: 0, y: -50, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -50, scale: 0.9 }}
               transition={{ duration: 0.4 }}
-              className="fixed top-5 z-[9999] right-5 w-[300px] rounded-xl bg-white p-4 shadow-lg dark:bg-navy-800 dark:text-white"
+              className="fixed top-5 z-[9999] md:right-24 right-5 w-[300px] rounded-xl bg-white p-4 shadow-lg dark:bg-navy-800 dark:text-white"
               dir="rtl"
             >
               <div className="flex flex-col gap-1">
@@ -98,9 +100,11 @@ const Navbar = (props: {
                 </span>
               </div>
             </motion.div>
+       </div>
           </Link>
         )}
       </AnimatePresence>
+
 
       <nav
         dir="rtl"

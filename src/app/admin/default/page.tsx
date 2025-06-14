@@ -1,71 +1,37 @@
 'use client';
-
-import { useState } from 'react';
 import Chart from 'components/admin/default/WeeklyRevenue';
 import TotalSpent from 'components/admin/default/TotalSpent';
 import { IoMdHome } from 'react-icons/io';
 import { MdBarChart } from 'react-icons/md';
 import Widget from 'components/widget/Widget';
-import ComplexTable from 'components/admin/default/ComplexTable';
+
 import useGet from 'hooks/useGet';
-import { useRouter, useSearchParams } from 'next/navigation';
 import { FaBell, FaUser } from 'react-icons/fa';
+import { Asset, AssetItem, Client, DepartmentItems, Entity, NotificationItem } from 'types/data';
 
 const Dashboard = () => {
-  const { data: tableDataComplex = [] } = useGet<any>(
+  const { data: tableDataComplex = [] } = useGet<AssetItem>(
     `${process.env.NEXT_PUBLIC_BASE_URL}/asset-item`,
   );
-  const { data: empolyee = [] } = useGet<any>(
+  const { data: empolyee = [] } = useGet<Client>(
     `${process.env.NEXT_PUBLIC_BASE_URL}/clients`,
   );
-  const { data: notifaction = [] } = useGet<any>(
+  const { data: notifaction = [] } = useGet<NotificationItem>(
     `${process.env.NEXT_PUBLIC_BASE_URL}/notification`,
   );
-  const { data: departments = [] } = useGet<any>(
+  const { data: departments = [] } = useGet<DepartmentItems>(
     `${process.env.NEXT_PUBLIC_BASE_URL}/departments`,
   );
-  const { data: entities = [] } = useGet<any>(
+  const { data: entities = [] } = useGet<Entity>(
     `${process.env.NEXT_PUBLIC_BASE_URL}/entities`,
   );
-  const { data: assets = [] } = useGet<any>(
+  const { data: assets = [] } = useGet<Asset>(
     `${process.env.NEXT_PUBLIC_BASE_URL}/assets`,
   );
 
-  const searchParams = useSearchParams();
-  const router = useRouter();
-
-  const itemsPerPage = 10;
-  const currentPage = parseInt(searchParams.get('page') || '1', 10);
-
-  // حالات الفلاتر
-  const [selectedRoom, setSelectedRoom] = useState('');
-  const [selectedDivision, setSelectedDivision] = useState('');
-  const [selectedDepartment, setSelectedDepartment] = useState('');
-
-  // استخراج القيم الفريدة
-  const rooms = Array.from(new Set(tableDataComplex.map((item) => item.room?.name).filter(Boolean)));
-  const divisions = Array.from(new Set(tableDataComplex.map((item) => item.room?.division?.name).filter(Boolean)));
-  const departmentsList = Array.from(new Set(tableDataComplex.map((item) => item.room?.division?.department?.name).filter(Boolean)));
-
-  // فلترة البيانات
-  const filteredData = tableDataComplex.filter((item) => {
-    const matchRoom = selectedRoom ? item.room?.name === selectedRoom : true;
-    const matchDivision = selectedDivision ? item.room?.division?.name === selectedDivision : true;
-    const matchDepartment = selectedDepartment ? item.room?.division?.department?.name === selectedDepartment : true;
-    return matchRoom && matchDivision && matchDepartment;
-  });
-
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-  const start = (currentPage - 1) * itemsPerPage;
-  const end = start + itemsPerPage;
-  const currentItems = filteredData.slice(start, end);
-
-  const goToPage = (page: number) => {
-    router.push(`?page=${page}`);
-  };
 
   return (
-    <div>
+    <div  dir='rtl'>
       {/* Widgets */}
       <div className="mt-3 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 3xl:grid-cols-6">
         <Widget
@@ -107,14 +73,7 @@ const Dashboard = () => {
       </div>
 
       {/* جدول الأصول */}
-      <div className="container w-full">
-        <ComplexTable
-          tableData={currentItems}
-          goToPage={goToPage}
-          totalPages={totalPages}
-          currentPage={currentPage}
-        />
-      </div>
+    
     </div>
   );
 };
