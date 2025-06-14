@@ -43,7 +43,7 @@ icon:"error",
 
   return (
     <div className="bg-black fixed inset-0 z-50 flex items-center justify-center bg-opacity-50 dark:bg-opacity-80">
-      <div className="relative w-full grid grid-cols-2 gap-5 max-w-md rounded-lg bg-white p-6 shadow-lg dark:bg-navy-800">
+      <div className="relative w-full grid grid-cols-1 gap-5 max-w-md rounded-lg bg-white p-6 shadow-lg dark:bg-navy-800">
         <button
           onClick={onClose}
           className="absolute right-3 top-3 text-gray-500"
@@ -54,7 +54,9 @@ icon:"error",
         <h1 className="text-center text-2xl font-bold text-navy-700 dark:text-white">
           إضافة أصول جديدة
         </h1>
-      
+        <p className="mt-2 text-center text-base text-gray-600 dark:text-gray-400">
+          يمكنك إضافة أصول جديدة من خلال النموذج التالي
+        </p>
 
         <form className="mt-5 space-y-4" onSubmit={handleAddNewAssetsFunction}>
           <div>

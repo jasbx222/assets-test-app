@@ -78,7 +78,7 @@ function AssetsTable({
   <select
     value={departmentFilter}
     onChange={(e: any) => handleFilterChange('department', e.target.value)}
-    className="rounded border px-3 py-2 min-w-[180px]"
+    className="rounded border px-3 py-2 min-w-[180px] dark:text-navy-800"
   >
     <option value="">كل الأقسام</option>
     {departments.map((dep: any) => (
@@ -92,7 +92,7 @@ function AssetsTable({
   <select
     value={roomFilter}
     onChange={(e: any) => handleFilterChange('room', e.target.value)}
-    className="rounded border px-3 py-2 min-w-[180px]"
+    className="rounded border px-3 py-2 min-w-[180px] dark:text-navy-800"
   >
     <option value="">كل الغرف</option>
     {rooms.map((room: any) => (
@@ -106,7 +106,7 @@ function AssetsTable({
   <select
     value={groupFilter}
     onChange={(e: any) => handleFilterChange('entities', e.target.value)}
-    className="rounded border px-3 py-2 min-w-[180px]"
+    className="rounded border px-3 py-2 min-w-[180px] dark:text-navy-800"
   >
     <option value="">كل الشعب</option>
     {groups.map((group: any) => (
