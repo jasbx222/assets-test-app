@@ -79,31 +79,32 @@ const Navbar = (props: {
     <>
       {/* إشعار يطفو */}
 
-       <AnimatePresence  >
-        {popupVisible && data && data[0] && (
-          <Link href={`/admin/reports/show/${data[0].notification.report_id}`}>
-       <div  className='flex justify-center items-center'>
-             <motion.div
-              initial={{ opacity: 0, y: -50, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -50, scale: 0.9 }}
-              transition={{ duration: 0.4 }}
-              className="fixed top-5 z-[9999] md:right-24 right-5 w-[300px] rounded-xl bg-white p-4 shadow-lg dark:bg-navy-800 dark:text-white"
-              dir="rtl"
-            >
-              <div className="flex flex-col gap-1">
-                <p className="text-base font-semibold text-navy-700 dark:text-white">
-                  {data[0].notification.title}
-                </p>
-                <span className="text-sm text-gray-800 dark:text-gray-300">
-                  {data[0].notification.body}
-                </span>
-              </div>
-            </motion.div>
-       </div>
-          </Link>
-        )}
-      </AnimatePresence>
+
+<AnimatePresence>
+  {popupVisible && data && data[0] && (
+    <Link href={`/admin/reports/show/${data[0].notification.report_id}`}>
+      <div className="flex justify-center items-center">
+        <motion.div
+          initial={{ opacity: 0, y: -40 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -40 }}
+          transition={{ duration: 0.4 }}
+          className="fixed top-5 z-[9999] md:right-24 right-5 w-[320px] rounded-xl bg-white border-r-4 border-red-500 p-4 shadow-lg dark:bg-navy-800 dark:text-white"
+          dir="rtl"
+        >
+          <div className="flex flex-col gap-1">
+            <p className="text-base font-bold text-red-600">
+              {data[0].notification.title}
+            </p>
+            <span className="text-sm text-gray-700 dark:text-gray-300">
+              {data[0].notification.body}
+            </span>
+          </div>
+        </motion.div>
+      </div>
+    </Link>
+  )}
+</AnimatePresence>
 
 
       <nav
