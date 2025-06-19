@@ -7,7 +7,7 @@ import useDelete from 'hooks/useDelete';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-const TableEmpolyee = ({ items = [] }: { items: Empolyee[] }) => {
+const TableEmpolyee = ({ items = [],refetch }: { items: Empolyee[] ,refetch:()=>void}) => {
   const route = useRouter();
   const [slice, setSlice] = useState(10);
   const { remove } = useDelete();
@@ -18,7 +18,8 @@ const TableEmpolyee = ({ items = [] }: { items: Empolyee[] }) => {
 
   const handleDelete = (id: string) => {
     remove(`${process.env.NEXT_PUBLIC_BASE_URL}/clients/${id}`);
-    route.refresh();
+  refetch()
+
   };
 
   // فلترة البيانات حسب الاسم ورقم الهاتف

@@ -1,5 +1,5 @@
 'use client';
-
+import {toast}  from 'react-toastify'
 import useShow from 'hooks/useShow';
 import { useParams } from 'next/navigation';
 import React from 'react';
@@ -20,17 +20,22 @@ import { useRouter } from 'next/navigation';
 const EmployeeDetails = () => {
   const route = useRouter();
   const { id } = useParams();
-  const { data: employee } = useShow<EmployeeShow>(
+  const { data: employee ,refetch} = useShow<EmployeeShow>(
     `${process.env.NEXT_PUBLIC_BASE_URL}/clients`,
     id,
   );
   // toggle-active/
   const { update } = usePutClosedMsg();
   const handleToggleActive = async () => {
-    update(`${process.env.NEXT_PUBLIC_BASE_URL}/clients/toggle-active/${id}`);
-    route.refresh();
-    // هنا يمكنك إضافة منطق التحديث أو إعادة تحميل البيانات
-  };
+  try {
+    await update(`${process.env.NEXT_PUBLIC_BASE_URL}/clients/toggle-active/${id}`);
+    toast('تمت العملية بنجاح');
+    await refetch()// إعادة تحميل بيانات الموظف مباشرة
+  } catch (err) {
+    toast.error('حدث خطأ أثناء تغيير الحالة');
+  }
+};
+
   return (
     <div className="mx-auto mt-10 max-w-4xl rounded-2xl bg-white p-8 shadow-xl dark:bg-navy-800">
       <h1 className="mb-8 border-b pb-4 text-3xl font-bold text-navy-700 dark:text-white">

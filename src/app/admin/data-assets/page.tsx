@@ -43,7 +43,7 @@ const Tables = () => {
   const url = `${process.env.NEXT_PUBLIC_BASE_URL}/assets?${queryString.toString()}`;
 
 
-  const { data: assets, loading } = useGet<any>(url);
+  const { data: assets, loading,refetch } = useGet<any>(url);
 
   if (!Array.isArray(assets)) return null;
 
@@ -72,6 +72,7 @@ const Tables = () => {
           <AssetsTable
             tableData={currentItems}
             goToPage={goToPage}
+                 refetch={refetch}
             handleAddNewAssets={handleAddNewAssets}
             showAddNewAssets={showAddNewAssets}
             currentPage={currentPage}
@@ -83,6 +84,7 @@ const Tables = () => {
       <div className="mt-5 flex h-full items-center justify-center">
         {showAddNewAssets && (
           <AddNewEssets
+          refetch={refetch}
             isOpen={showAddNewAssets}
             onClose={handleAddNewAssets}
           />

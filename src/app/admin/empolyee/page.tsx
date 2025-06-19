@@ -14,7 +14,7 @@ const Page = () => {
     setShowAddNewEmpolyee(!showAddNewEmpolyee);
   };
 
-  const { data: employees, loading } = useGet<Empolyee>(
+  const { data: employees, loading ,refetch} = useGet<Empolyee>(
     `${process.env.NEXT_PUBLIC_BASE_URL}/clients`,
   );
 
@@ -27,7 +27,7 @@ const Page = () => {
         <div className="mb-5 mt-5 flex items-center justify-between px-[26px]">
           <button
             onClick={handleAddNewEmpolyee}
-            className="rounded-lg bg-lightPrimary px-4 py-2 text-base font-medium text-brand-500 hover:bg-gray-100 active:bg-gray-200 dark:bg-navy-700 dark:text-white dark:hover:bg-white/20 dark:active:bg-white/10"
+            className="rounded-lg bg-blue-600  px-4 py-2 text-base font-medium hover:text-gray-800 text-gray-200 hover:bg-gray-100 active:bg-gray-200 dark:bg-navy-700 dark:text-white dark:hover:bg-white/20 dark:active:bg-white/10"
           >
             إضافة موظف جديد
           </button>
@@ -35,14 +35,14 @@ const Page = () => {
         <div className="h-full w-full rounded-xl">
           {showAddNewEmpolyee && (
             <div className="px-[26px]">
-              <AddNewEmpolyee onClose={handleAddNewEmpolyee} />
+              <AddNewEmpolyee refetch={refetch} onClose={handleAddNewEmpolyee} />
             </div>
           )}
         </div>
 
         {showAddNewEmpolyee ? null : (
           <div className="h-full w-full rounded-xl">
-            <TableEmpolyee items={employees} />
+            <TableEmpolyee refetch={refetch} items={employees} />
           </div>
         )}
       </div>

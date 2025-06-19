@@ -6,7 +6,7 @@ import Pagination from 'components/pageination/Pageination';
 import useDelete from 'hooks/useDelete';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Swal from 'sweetalert2';
+import {toast} from 'react-toastify';
 
 type Data = {
   id: number;
@@ -23,6 +23,7 @@ function AssetsTable({
   tableData,
   totalPages,
   goToPage,
+       refetch,
   currentPage,
   handleAddNewAssets,
   showAddNewAssets = false,
@@ -39,6 +40,7 @@ function AssetsTable({
   departments?: string[];
   rooms?: string[];
   groups?: string[];
+  refetch:()=>void
 }) {
   const [activeActionIndex, setActiveActionIndex] = React.useState<number | null>(null);
   const { remove,response } = useDelete();
@@ -57,10 +59,8 @@ const [res,setRes]=useState('');
    await remove(`${process.env.NEXT_PUBLIC_BASE_URL}/assets/${id}`);
    setRes(response)
     setActiveActionIndex(null);
-    Swal.fire({
-      title:`تم الحذف بنجاح `,
-      icon:'success'
-    })
+    refetch()
+    toast.success('تم عملية الحذف بنجاح')
     router.refresh();
   };
 

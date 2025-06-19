@@ -13,6 +13,7 @@ import { Portal } from '@chakra-ui/portal';
 import Navbar from 'components/navbar';
 import Sidebar from 'components/sidebar';
 import Footer from 'components/footer/Footer';
+import { ToastContainer } from 'react-toastify';
 
 export default function Admin({ children }: { children: React.ReactNode }) {
   // states and functions
@@ -45,6 +46,7 @@ export default function Admin({ children }: { children: React.ReactNode }) {
             />
             <div className="mx-auto min-h-screen p-2 !pt-[10px] md:p-2">
               {children}
+               <ToastContainer />
             </div>
             <div className="p-3">
               <Footer />

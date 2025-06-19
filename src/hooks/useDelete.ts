@@ -11,8 +11,9 @@ const useDelete = () => {
   const remove = useCallback(async (url: string) => {
     setLoading(true);
     try {
-      const token = getDecryptedToken()
-  if(!token)return null;
+      const token = getDecryptedToken();
+      if (!token) return;
+
       const res = await axios.delete(url, {
         headers: {
           Authorization: `Bearer ${token}`,

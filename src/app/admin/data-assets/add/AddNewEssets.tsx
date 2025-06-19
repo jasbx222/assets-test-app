@@ -2,19 +2,23 @@ import React, { useState } from 'react';
 import usePost from 'hooks/usePost';
 import { HiX } from 'react-icons/hi';
 import Swal from 'sweetalert2';
+import {toast} from 'react-toastify'
+import useGet from 'hooks/useGet';
+import { Asset } from 'types/data';
 interface AddNewEssetsProps {
   isOpen: boolean;
   onClose: () => void;
+  refetch:()=>void
 }
 
-const AddNewEssets: React.FC<AddNewEssetsProps> = ({ isOpen, onClose }) => {
+const AddNewEssets: React.FC<AddNewEssetsProps> = ({ isOpen, onClose ,refetch}) => {
   const { add } = usePost();
   const [name, setName] = useState('');
   const [image, setImage] = useState<File | null>(null);
   const [note, setNote] = useState('');
 
   if (!isOpen) return null;
-
+// const {data,refetch}=useGet(`${process.env.NEXT_PUBLIC_BASE_URL}/assets`)
   const handleAddNewAssetsFunction = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -26,11 +30,9 @@ const AddNewEssets: React.FC<AddNewEssetsProps> = ({ isOpen, onClose }) => {
       };
 
       await add(`${process.env.NEXT_PUBLIC_BASE_URL}/assets`, newAsset, true);
-      Swal.fire({
-      title: 'تم اضافة الاصل',
-icon:"success",
-  timer: 2000  
-      })
+       toast.success('تمت إضافة الأصل بنجاح');
+
+    refetch()
       onClose();
     } catch (error) {
     Swal.fire({

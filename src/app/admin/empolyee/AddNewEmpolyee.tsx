@@ -1,5 +1,5 @@
 'use client';
-
+import {toast} from 'react-toastify';
 import React, { useEffect, useState } from 'react';
 import Inputs from './Inputs';
 // import axios from 'axios';
@@ -11,7 +11,7 @@ type Entity = { id: number; name: string };
 type Department = { id: number; name: string };
 type Division = { id: number; name: string };
 
-const AddNewEmpolyee = ({ onClose }: { onClose: () => void }) => {
+const AddNewEmpolyee = ({ onClose ,refetch }: { onClose: () => void ,refetch:()=>void }) => {
   const [name, setFullName] = useState('');
   const [phone, setPhone] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
@@ -47,6 +47,8 @@ try {
     };
     await add(`${process.env.NEXT_PUBLIC_BASE_URL}/clients`, payload, false)
 
+      toast.success(' تمت اضافة الموظف بنجاح')
+    refetch()
 } catch (error) {
      Swal.fire({
       title:`${error.message}`,
