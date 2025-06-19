@@ -40,7 +40,7 @@ const routes = [
     name:'ادارة التقارير ',
     layout: '/admin',
     path: 'reports',
-    icon: <NotepadText/>
+    // icon: <NotepadText/>
   },
   {
     name:'ادارة الاصول ',

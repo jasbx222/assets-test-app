@@ -51,7 +51,7 @@ export const SidebarLinks = (props: { routes: RoutesType[] }): JSX.Element => {
                       : 'font-medium text-gray-600'
                   }`}
                 >
-                  {route.icon ? route.icon : ''}{' '}
+                  {/* {route.icon ? route.icon : ''}{' '} */}
                 </span>
               </li>
               {activeRoute(route.path) ? (
