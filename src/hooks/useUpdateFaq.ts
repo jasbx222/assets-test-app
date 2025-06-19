@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
+import { getDecryptedToken } from "./getDecryptedToken";
 
 export default function useUpdateFaq() {
   const [response, setResponse] = useState<string | null>(null);
@@ -7,7 +8,7 @@ export default function useUpdateFaq() {
 
   const update = async (url: string, data: any, isFormData = false) => {
     try {
-      const token = localStorage.getItem("token");
+      const token =getDecryptedToken()
   if(!token)return null;
       setLoading(true);
 

@@ -1,6 +1,7 @@
 "use client";
 import axios from "axios";
 import { useCallback, useState } from "react";
+import { getDecryptedToken } from "./getDecryptedToken";
 
 const usePutClosedMsg = () => {
   const [response, setResponse] = useState("");
@@ -10,7 +11,7 @@ const usePutClosedMsg = () => {
     setLoad(true);
     setResponse(""); 
     try {
-      const token = localStorage.getItem("token");
+      const token =getDecryptedToken()
   if(!token)return null;
       const res = await axios.put(
         url,

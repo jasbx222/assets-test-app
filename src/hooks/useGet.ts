@@ -1,6 +1,7 @@
 'use client';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { getDecryptedToken } from './getDecryptedToken';
 
 const useGet = <T>(url: string) => {
   const [data, setData] = useState<T[]>([]);
@@ -8,7 +9,7 @@ const useGet = <T>(url: string) => {
 
   useEffect(() => {
     setLoading(false);
-    const token = localStorage.getItem('token');
+    const token = getDecryptedToken()
     if (!token) return;
     const fetchData = async () => {
       try {

@@ -1,11 +1,12 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import CardMenu from 'components/card/CardMenu';
 import Card from 'components/card';
 import Pagination from 'components/pageination/Pageination';
 import useDelete from 'hooks/useDelete';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Swal from 'sweetalert2';
 
 type Data = {
   id: number;
@@ -40,7 +41,7 @@ function AssetsTable({
   groups?: string[];
 }) {
   const [activeActionIndex, setActiveActionIndex] = React.useState<number | null>(null);
-  const { remove } = useDelete();
+  const { remove,response } = useDelete();
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -51,10 +52,16 @@ function AssetsTable({
   const handleOperation = (index: number) => {
     setActiveActionIndex((prevIndex) => (prevIndex === index ? null : index));
   };
-
-  const handleDelete = (id: number) => {
-    remove(`${process.env.NEXT_PUBLIC_BASE_URL}/assets/${id}`);
+const [res,setRes]=useState('');
+  const handleDelete = async(id: number) => {
+   await remove(`${process.env.NEXT_PUBLIC_BASE_URL}/assets/${id}`);
+   setRes(response)
     setActiveActionIndex(null);
+    Swal.fire({
+      title:`تم الحذف بنجاح `,
+      icon:'success'
+    })
+    router.refresh();
   };
 
  
@@ -188,7 +195,7 @@ function AssetsTable({
                           </button>
                         </Link>
 
-                        <Link href={`/admin/data-assets/edit/${item.id}`}>
+                        <Link href={`/admin/data-assets/update/${item.id}`}>
                           <button
                             onClick={() => console.log(`تعديل: ${item.name}`)}
                             className="w-full px-4 py-2 text-right text-sm text-gray-700 hover:bg-gray-100"

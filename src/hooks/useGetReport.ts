@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { getDecryptedToken } from "./getDecryptedToken";
 
 function useGetReport<T>(url: string) {
   const [data, setData] = useState<T | null>(null);
@@ -9,7 +10,7 @@ function useGetReport<T>(url: string) {
     const fetchData = async () => {
       setLoading(true);
       try {
-          const token = localStorage.getItem('token');
+          const token = getDecryptedToken()
   if (!token) return;
         const res = await axios.get(url,{
            headers:{

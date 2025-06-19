@@ -51,7 +51,7 @@ const Page = () => {
   };
 
   return (
-    <div className="container w-full space-y-4">
+    <div className="container w-full space-y-4" dir='rtl'>
       <input
         type="search"
         placeholder="ابحث عن طريق الكود"
@@ -60,8 +60,6 @@ const Page = () => {
         className="rounded-lg border p-2 relative top-12 w-full md:w-1/3"
       />
 
-      {/* لاحقاً تضيف فلاتر هنا */}
-      {/* <select onChange={...} /> */}
 
       <ComplexTable
         tableData={currentItems}

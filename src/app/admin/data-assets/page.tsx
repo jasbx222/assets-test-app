@@ -36,13 +36,13 @@ const Tables = () => {
   if (roomFilter) queryString.append('room', roomFilter);
   if (groupFilter) queryString.append('group', groupFilter);
 
-  // إضافة الباجينيشن لو API يدعمه (مثلاً page و limit)
+
   queryString.append('page', currentPage.toString());
   queryString.append('limit', itemsPerPage.toString());
 
   const url = `${process.env.NEXT_PUBLIC_BASE_URL}/assets?${queryString.toString()}`;
 
-  // جلب البيانات مع الفلاتر والباجينيشن
+
   const { data: assets, loading } = useGet<any>(url);
 
   if (!Array.isArray(assets)) return null;

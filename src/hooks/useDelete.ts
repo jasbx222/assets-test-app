@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import axios from "axios";
+import { getDecryptedToken } from "./getDecryptedToken";
 
 const useDelete = () => {
   const [loading, setLoading] = useState(false);
@@ -10,7 +11,7 @@ const useDelete = () => {
   const remove = useCallback(async (url: string) => {
     setLoading(true);
     try {
-      const token = localStorage.getItem("token");
+      const token = getDecryptedToken()
   if(!token)return null;
       const res = await axios.delete(url, {
         headers: {

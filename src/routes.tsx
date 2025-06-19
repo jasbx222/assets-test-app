@@ -20,20 +20,20 @@ const routes = [
     name: 'الرئيسية',
     layout: '/admin',
     path: 'default',
-    icon: <MdHome className="h-6 w-6" />,
+    // icon: <MdHome className="h-6 w-6" />,
   },
   {
     name:'ادارة الموظفين',
     layout: '/admin',
     path: 'empolyee',
-    icon: <FaUser className="h-6 w-6" />,
+    // icon: <FaUser className="h-6 w-6" />,
 
     secondary: true,
   },
   {
     name: 'الاصول ',
     layout: '/admin',
-    icon: <MdBarChart className="h-6 w-6" />,
+    // icon: <MdBarChart className="h-6 w-6" />,
     path: 'data-assets',
   },
   {
@@ -46,7 +46,7 @@ const routes = [
     name:'ادارة الاصول ',
     layout: '/admin',
     path: 'manage_asset',
-    icon: <MdAssignmentReturn/>
+    // icon: <MdAssignmentReturn/>/
   },
   // {
   //   name: 'Sign In',

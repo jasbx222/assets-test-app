@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { handleExport } from 'hooks/useExportToEx';
 import TableReports from './TableReports';
+import { getDecryptedToken } from 'hooks/getDecryptedToken';
 
 export default function Page() {
   const [reports, setReports] = useState<any[]>([]);
@@ -19,10 +20,10 @@ export default function Page() {
     const fetchReports = async () => {
       try {
         const response = await axios.get(
-          'https://jaradalasul.com/admin/v1/reports',
+        `${process.env.NEXT_PUBLIC_BASE_URL}/reports`,
           {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
+              Authorization: `Bearer ${getDecryptedToken()}`,
               Accept: 'application/json; charset=UTF-8',
             },
           }
@@ -47,10 +48,10 @@ export default function Page() {
     const fetchDivisions = async () => {
       try {
         const response = await axios.get(
-          'https://jaradalasul.com/admin/v1/divisions',
+          `${process.env.NEXT_PUBLIC_BASE_URL}/divisions`,
           {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
+              Authorization: `Bearer ${getDecryptedToken()}`,
               Accept: 'application/json; charset=UTF-8',
             },
           }

@@ -6,6 +6,8 @@ import Default from 'components/auth/variants/DefaultAuthLayout';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react';
 import axios from 'axios';
+import CryptoJS from 'crypto-js';
+
 import { getMessaging, getToken as getFCMToken } from 'firebase/messaging';
 import { app } from '../../firebase';
 
@@ -53,12 +55,13 @@ function SignInDefault() {
         { email, password, fcm_token: fcmToken }
       );
 
-      const token = res.data?.token;
-      if (token) {
-        localStorage.setItem('token', token);
-        router.push('/admin/');
-      } else {
-        setErr('فشل تسجيل الدخول: لا يوجد توكين.');
+   const token = res?.data?.token;
+const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY!;
+
+      if (token && typeof token === "string") {
+        const encryptedToken = CryptoJS.AES.encrypt(token, SECRET_KEY).toString();
+        localStorage.setItem("token", encryptedToken);
+        window.location.href = "/home";
       }
     } catch (err: any) {
       console.error('خطأ أثناء تسجيل الدخول:', err);

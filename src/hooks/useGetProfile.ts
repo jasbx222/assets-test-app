@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { getDecryptedToken } from "./getDecryptedToken";
 
 export default function useGetProfile<T>(url: string ) {
   const [data, setData] = useState<T | null>(null);
@@ -8,7 +9,7 @@ export default function useGetProfile<T>(url: string ) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-          const token = localStorage.getItem('token');
+          const token = getDecryptedToken()
           if(!token)return null;
         setLoading(true);
         const res = await axios.get(`${url}`,{

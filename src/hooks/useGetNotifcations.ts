@@ -1,13 +1,14 @@
 'use client';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { getDecryptedToken } from './getDecryptedToken';
 
 const useGetnotific = <T>(url: string) => {
   const [data, setData] = useState<T[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = getDecryptedToken()
     if (!token) return;
 
     const fetchData = async () => {
@@ -31,8 +32,8 @@ const useGetnotific = <T>(url: string) => {
     fetchData();
 
     // refresh every 3 seconds
-    // const interval = setInterval(fetchData, 3000);
-    // return () => clearInterval(interval);
+    const interval = setInterval(fetchData, 3000);
+    return () => clearInterval(interval);
   }, [url]);
 
   return { data, loading };

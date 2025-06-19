@@ -1,3 +1,5 @@
+import { StaticImageData } from "next/image";
+
 export interface Empolyee {
    id: string;
   name: string;
@@ -137,7 +139,7 @@ export type DepartmentItems = {
 export type Asset = {
   id: number;
   name: string;
-  image: string;
+  image: any;
   note: string | null;
   created_at: string;
 };

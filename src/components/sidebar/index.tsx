@@ -13,13 +13,13 @@ function SidebarHorizon(props: { routes: IRoute[]; [x: string]: any }) {
      <div dir='rtl'
       className={`sm:none duration-175 ${
         open ? 'block' : ' hidden'
-        } linear fixed z-50 right-0 md:block flex h-full flex-col bg-white pb-10 shadow-2xl shadow-white/5 transition-all dark:!bg-navy-800 dark:text-white md:!z-50 lg:!z-50 xl:!z-0 
+        } linear fixed z-50 right-0 xl:block flex h-full flex-col bg-white pb-10 shadow-2xl shadow-white/5 transition-all dark:!bg-navy-800 dark:text-white md:!z-50 lg:!z-50 xl:!z-0 
         
       `}
     >
       {/* زر الإغلاق للشاشات الصغيرة */}
       <span
-        className="absolute right-4 top-4 block cursor-pointer xl:hidden"
+        className="absolute right-4 top-4 block cursor-pointer xl:hidden "
         onClick={() => setOpen(!open)}
       >
         <HiX className="text-2xl" />

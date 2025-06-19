@@ -6,32 +6,6 @@ import Pageination from 'components/pageination/Pageination';
 import * as XLSX from 'xlsx';
 import { AssetItem } from 'types/data';
 
-type AssetObj = {
-  id: string;
-  name: string;
-  image: string;
-  created_at: string;
-};
-
-type RowObj = {
-  id: number;
-  label: string;
-  status: string;
-  asset: AssetObj;
-  room: {
-    id: number;
-    name: string;
-    division: {
-      id: number;
-      name: string;
-      department: {
-        id: number;
-        name: string;
-      };
-    };
-  };
-};
-
 type Props = {
   tableData:  AssetItem[];
   totalPages: number;
@@ -40,19 +14,34 @@ type Props = {
 };
 
 const AssetTable = ({ tableData, totalPages, currentPage, goToPage }: Props) => {
+  // الحالات المختارة للفلترة
+  const [selectedAsset, setSelectedAsset] = useState('');
   const [selectedRoom, setSelectedRoom] = useState('');
   const [selectedDivision, setSelectedDivision] = useState('');
   const [selectedDepartment, setSelectedDepartment] = useState('');
 
+  // استخرج قائمة الأصول المميزة (الأسماء فقط)
+  const assets = useMemo(() => {
+    // Set يستخدم لضمان عدم تكرار الأسماء
+    return [...new Set(tableData.map(item => item.asset.name))];
+  }, [tableData]);
+
+  // استخراج الخيارات بدون تكرار لباقي الفلاتر
+  const rooms = useMemo(() => [...new Set(tableData.map(item => item.room.name))], [tableData]);
+  const divisions = useMemo(() => [...new Set(tableData.map(item => item.room.division.name))], [tableData]);
+  const departments = useMemo(() => [...new Set(tableData.map(item => item.room.division.department.name))], [tableData]);
+
+  // الفلترة الأساسية حسب الأصل وباقي الفلاتر
   const filteredData = useMemo(() => {
-    return tableData.filter((item) => {
-      return (
-        (!selectedRoom || item.room.name === selectedRoom) &&
-        (!selectedDivision || item.room.division.name === selectedDivision) &&
-        (!selectedDepartment || item.room.division.department.name === selectedDepartment)
-      );
+    return tableData.filter(item => {
+      const matchesAsset = !selectedAsset || item.asset.name === selectedAsset;
+      const matchesRoom = !selectedRoom || item.room.name === selectedRoom;
+      const matchesDivision = !selectedDivision || item.room.division.name === selectedDivision;
+      const matchesDepartment = !selectedDepartment || item.room.division.department.name === selectedDepartment;
+
+      return matchesAsset && matchesRoom && matchesDivision && matchesDepartment;
     });
-  }, [tableData, selectedRoom, selectedDivision, selectedDepartment]);
+  }, [tableData, selectedAsset, selectedRoom, selectedDivision, selectedDepartment]);
 
   const exportToExcel = () => {
     const worksheetData = filteredData.map((row) => ({
@@ -70,16 +59,24 @@ const AssetTable = ({ tableData, totalPages, currentPage, goToPage }: Props) => 
     XLSX.writeFile(workbook, 'filtered_assets.xlsx');
   };
 
-  // استخراج الخيارات بدون تكرار
-  const rooms = [...new Set(tableData.map(item => item.room.name))];
-  const divisions = [...new Set(tableData.map(item => item.room.division.name))];
-  const departments = [...new Set(tableData.map(item => item.room.division.department.name))];
-
   return (
-    <Card extra="w-full container top-10 h-full px-4 pb-6" >
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pt-4" dir='rtl'>
+    <Card extra="w-full container top-10 h-full px-4 pb-6"  >
+      <div  className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pt-4" dir='rtl'>
         <div className="text-xl font-bold text-navy-700 dark:text-white">الأصول</div>
         <div className="flex flex-wrap gap-2">
+          {/* فلتر حسب الأصل */}
+          <select
+            value={selectedAsset}
+            onChange={(e) => setSelectedAsset(e.target.value)}
+            className="p-2 border rounded-md text-sm dark:text-navy-700"
+          >
+            <option value="" className='dark:text-navy-700'>كل الأصول</option>
+            {assets.map((assetName, idx) => (
+              <option key={idx} value={assetName}>{assetName}</option>
+            ))}
+          </select>
+
+          {/* فلاتر أخرى */}
           <select
             value={selectedDepartment}
             onChange={(e) => setSelectedDepartment(e.target.value)}
@@ -94,7 +91,6 @@ const AssetTable = ({ tableData, totalPages, currentPage, goToPage }: Props) => 
             value={selectedDivision}
             onChange={(e) => setSelectedDivision(e.target.value)}
             className="p-2 border rounded-md text-sm dark:text-navy-700"
-     
           >
             <option value="">كل الشعب</option>
             {divisions.map((div, idx) => (
@@ -132,8 +128,6 @@ const AssetTable = ({ tableData, totalPages, currentPage, goToPage }: Props) => 
               <th className="py-3 px-4 text-sm font-bold text-gray-600 dark:text-white">الغرفة</th>
               <th className="py-3 px-4 text-sm font-bold text-gray-600 dark:text-white">الشعبة</th>
               <th className="py-3 px-4 text-sm font-bold text-gray-600 dark:text-white">القسم</th>
-            
-  
             </tr>
           </thead>
           <tbody>
@@ -151,8 +145,6 @@ const AssetTable = ({ tableData, totalPages, currentPage, goToPage }: Props) => 
                 <td className="py-3 px-4 text-sm">{row.room.name}</td>
                 <td className="py-3 px-4 text-sm">{row.room.division.name}</td>
                 <td className="py-3 px-4 text-sm">{row.room.division?.department.name}</td>
-         
-              
               </tr>
             ))}
           </tbody>

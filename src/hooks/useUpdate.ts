@@ -1,6 +1,7 @@
 "use client";
 import axios from "axios";
 import { useCallback, useState } from "react";
+import { getDecryptedToken } from "./getDecryptedToken";
 
 const useUpdate = () => {
   const [response, setResponse] = useState<string>("");
@@ -10,7 +11,7 @@ const useUpdate = () => {
     setLoad(true);
     setResponse(""); // reset previous response
     try {
-      const token = localStorage.getItem("token");
+      const token =getDecryptedToken()
   if(!token)return null;
       const res = await axios.put(url, data, {
         headers: {
