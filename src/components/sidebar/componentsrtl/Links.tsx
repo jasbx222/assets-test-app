@@ -41,7 +41,7 @@ export const SidebarLinks = (props: { routes: RoutesType[] }): JSX.Element => {
                       : 'font-medium text-gray-600'
                   }`}
                 >
-                  {route.icon ? route.icon : <DashIcon />}{' '}
+                  {/* {route.icon ? route.icon : <DashIcon />}{' '} */}
                 </span>
                 <p
                   className={`leading-1 mr-4 flex ${
