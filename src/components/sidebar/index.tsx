@@ -38,7 +38,7 @@ function SidebarHorizon(props: { routes: IRoute[]; [x: string]: any }) {
       </ul>
 
       {/* Free Horizon Card */}
-      <div className="flex justify-center   relative md:top-24">
+      <div className="flex justify-center   ">
         <SidebarCard />
       </div>
 

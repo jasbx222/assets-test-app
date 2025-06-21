@@ -48,6 +48,12 @@ const routes = [
     path: 'manage_asset',
     // icon: <MdAssignmentReturn/>/
   },
+  {
+    name:'ادارة الشعب ',
+    layout: '/admin',
+    path: 'divisions',
+    // icon: <MdAssignmentReturn/>/
+  },
   // {
   //   name: 'Sign In',
   //   layout: '/auth',

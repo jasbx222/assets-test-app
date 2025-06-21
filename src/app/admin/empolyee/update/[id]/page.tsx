@@ -7,7 +7,7 @@ import useUpdate from 'hooks/useUpdate';
 import { useRouter, useParams } from 'next/navigation';
 import useShow from 'hooks/useShow';
 import { EmployeeShow } from '../../../../../types/data';
-
+import {toast} from 'react-toastify'
 type Entity = { id: number; name: string };
 type Department = { id: number; name: string };
 type Division = { id: number; name: string };
@@ -36,7 +36,7 @@ const Page = () => {
       setPhone(empolyee.phone || '');
       setExpiryDate(empolyee.expiry_date || '');
       setEntityId(empolyee.entity?.id?.toString() || '');
-      setDepartmentId(empolyee.department?.id?.toString() || '');
+      setDepartmentId(empolyee.division.department?.id?.toString() || '');
       setDivisionId(empolyee.division?.id?.toString() || '');
     }
   }, [empolyee]);
@@ -53,7 +53,7 @@ const Page = () => {
 
   const { update, response } = useUpdate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit =async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!id) return;
@@ -68,14 +68,15 @@ const Page = () => {
       division_id: Number(divisionId),
     };
 
-    update(`${process.env.NEXT_PUBLIC_BASE_URL}/clients/${id}`, payload);
+   await update(`${process.env.NEXT_PUBLIC_BASE_URL}/clients/${id}`, payload);
+   toast.success('تم التعديل بنجاح')
   };
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center">
       <button
         className="text-gray-900 hover:text-gray-700 dark:text-gray-200 dark:hover:text-white"
-        onClick={() => router.push('/empolyee')}
+        onClick={() => router.push('/admin/empolyee')}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -92,10 +93,6 @@ const Page = () => {
           />
         </svg>
       </button>
-
-      {response && (
-        <div className="mb-2 text-green-500">تم التعديل الموظف بنجاح</div>
-      )}
 
       <h1 className="text-2xl font-bold text-navy-700 dark:text-white">
         تعديل معلومات الموظف
@@ -164,8 +161,8 @@ const Page = () => {
             >
               <option value="">اختر القسم الرئيسي</option>
               {departmentsData.map((d) => (
-                <option key={d.id} value={d.id}>
-                  {d.name}
+                <option key={d.id} value={d?.id}>
+                  {d?.name}
                 </option>
               ))}
             </select>

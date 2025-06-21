@@ -2,9 +2,9 @@
 
 import { useParams } from 'next/navigation';
 import useShow from 'hooks/useShow';
-import { CalendarDays, StickyNote, Tag } from 'lucide-react';
+import { CalendarDays, MoreHorizontal, StickyNote, Tag } from 'lucide-react';
 import React from 'react';
-
+import Link from 'next/link';
 interface Asset {
   id: number;
   name: string;
@@ -13,13 +13,16 @@ interface Asset {
   created_at: string;
 }
 
-export default function AssetDetail() {
+export default function Page() {
   const { id } = useParams();
-  const { data: asset, loading } = useShow<Asset>(`${process.env.NEXT_PUBLIC_BASE_URL}/assets`, id);
+  const { data: asset, loading } = useShow<Asset>(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/assets`,
+    id,
+  );
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-[40vh] text-gray-600 dark:text-gray-300 text-lg font-medium">
+      <div className="flex min-h-[40vh] items-center justify-center text-lg font-medium text-gray-600 dark:text-gray-300">
         جاري تحميل البيانات...
       </div>
     );
@@ -27,56 +30,72 @@ export default function AssetDetail() {
 
   if (!asset) {
     return (
-      <div className="text-center text-gray-500 dark:text-gray-400 py-20">
+      <div className="py-20 text-center text-gray-500 dark:text-gray-400">
         لم يتم العثور على بيانات الأصل.
       </div>
     );
   }
 
   return (
-    <div className="rtl max-w-4xl mx-auto mt-10 p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700">
-      <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-8 text-center">
-       تفاصيل الأصل رقم #{asset.id}
+    <div className="rtl mx-auto mt-10 max-w-4xl rounded-2xl border border-gray-200 bg-white p-6 shadow-xl dark:border-gray-700 dark:bg-gray-900">
+      <h1 className="mb-8 text-center text-3xl font-bold text-gray-800 dark:text-white">
+        تفاصيل الأصل رقم #{asset.id}
       </h1>
 
-      <div className="flex flex-col md:flex-row gap-8 items-start">
+      <div className="flex flex-col items-start gap-8 md:flex-row">
         {/* صورة الأصل */}
-        <div className="md:w-1/2 w-full">
+        <div className="w-full md:w-1/2">
           <img
             src={asset.image}
             alt={asset.name}
-            className="rounded-2xl border border-gray-300 dark:border-gray-600 object-cover w-full h-72 shadow-md"
+            className="h-72 w-full rounded-2xl border border-gray-300 object-cover shadow-md dark:border-gray-600"
           />
         </div>
 
         {/* التفاصيل النصية */}
-        <div className="md:w-1/2 w-full space-y-6">
+        <div className="w-full space-y-6 md:w-1/2">
           <div className="flex items-start gap-3">
-            <Tag className="text-blue-500 mt-1" />
+            <Tag className="mt-1 text-blue-500" />
             <div>
-              <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-200">اسم الأصل</h2>
+              <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-200">
+                اسم الأصل
+              </h2>
               <p className="text-gray-800 dark:text-gray-300">{asset.name}</p>
             </div>
           </div>
 
           <div className="flex items-start gap-3">
-            <StickyNote className="text-green-500 mt-1" />
+            <StickyNote className="mt-1 text-green-500" />
             <div>
-              <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-200">ملاحظة</h2>
+              <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-200">
+                ملاحظة
+              </h2>
               <p className="text-gray-800 dark:text-gray-300">
-                {asset.note ?? <span className="text-sm text-gray-400">لا توجد ملاحظات</span>}
+                {asset.note ?? (
+                  <span className="text-sm text-gray-400">لا توجد ملاحظات</span>
+                )}
               </p>
             </div>
           </div>
-
+          <Link href={`assets_branch/${id}`}>
+            <div className="flex items-start gap-3">
+              <MoreHorizontal className="mt-1 text-green-500" />
+              <div>
+                <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-200">
+                  الاصول الفرعية
+                </h2>
+                الاصول الفرعية
+              </div>
+            </div>
+          </Link>
           <div className="flex items-start gap-3">
-            <CalendarDays className="text-yellow-500 mt-1" />
+            <CalendarDays className="mt-1 text-yellow-500" />
             <div>
-              <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-200">تاريخ الإضافة</h2>
+              <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-200">
+                تاريخ الإضافة
+              </h2>
               <p className="text-gray-800 dark:text-gray-300">
-               {
-                asset.created_at ?? ''
-               }
+                {asset.created_at ?? ''}
               </p>
             </div>
           </div>

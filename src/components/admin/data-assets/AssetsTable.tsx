@@ -219,6 +219,7 @@ const [res,setRes]=useState('');
           </tbody>
         </table>
         <Pagination totalPages={totalPages} currentPage={currentPage} goToPage={goToPage} />
+      
       </div>
     </Card>
   );

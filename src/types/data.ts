@@ -40,6 +40,8 @@ export interface Department {
 export interface Division {
   id: number;
   name: string;
+  department: Department | null;
+  assets_count:number
 }
 
 export type EmployeeShow= {
@@ -50,7 +52,7 @@ export type EmployeeShow= {
   expiry_date: string;
   created_at: string;
   entity: Entity;
-  department: Department | null;
+  
   division: Division | null;
 };
 export type AssetItem = {
@@ -143,3 +145,31 @@ export type Asset = {
   note: string | null;
   created_at: string;
 };
+export interface AssetItemBranch {
+  id: number;
+  label: string;
+  status: string;
+  asset: {
+    id: number;
+    name: string;
+    image: string;
+    note: string;
+    created_at: string;
+  };
+  room: {
+    id: number;
+    name: string;
+    division: {
+      id: number;
+      name: string;
+      department: {
+        id: number;
+        name: string;
+        entity: {
+          id: number;
+          name: string;
+        };
+      };
+    };
+  };
+}
